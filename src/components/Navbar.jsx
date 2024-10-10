@@ -74,7 +74,7 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
         <Link to="/chat" className="navbar-link">
           Chat
         </Link>
-        <Link to="/moodtracker" className="navbar-link">
+        <Link to="/mood-tracker" className="navbar-link">
           Mood Tracker
         </Link>
       </div>

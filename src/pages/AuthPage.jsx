@@ -152,7 +152,7 @@ const AuthPage = (props) => {
 
   const signInWithGoogle = async () => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, provider); // Use provider instead of googleProvider
       const user = result.user;
       cookies.set("auth-token", user.refreshToken);
 
