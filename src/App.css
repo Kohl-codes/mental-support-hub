@@ -1,42 +1,75 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* =========== GOOGLE FONT =========== */
+@import url("https://fonts.googleapis.com/css2?family=Itim&display=swap");
+
+:root {
+  /* =========== COLORS =========== */
+  --text: #687dac;
+  --background: #c8d9d3;
+  --primary: #687dac;
+  --secondary: #f2e3d2;
+  --accent: #d2e0ee;
+  --error: #ac6767;
+
+  /* =========== TYPOGRAPHY =========== */
+  --main-font: "Itim", cursive;
+  --h1-font: 50px;
+  --h2-font: 38px;
+  --h3-font: 24px;
+  --h4-font: 20px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+/* Resets */
+ul {
+  list-style-type: none;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+a {
+  text-decoration: none;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  border: none;
+  outline: none;
+  scroll-behavior: smooth;
+  font-family: var(--main-font);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+body {
+  min-height: 100vh;
 }
 
-.card {
-  padding: 2em;
+.sign-out {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
 }
 
-.read-the-docs {
-  color: #888;
+.logout-button {
+  cursor: pointer;
+  font-size: var(--h2-font);
+  color: var(--accent-light);
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout-button:hover {
+  color: #e06773;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary);
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
 }

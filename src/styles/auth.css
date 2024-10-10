@@ -1,0 +1,117 @@
+.bg {
+  background-image: url("../assets/mshbg1.png");
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+  background-color: rgba(255, 255, 255, 0.4);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  padding: 20px 30px;
+  border-radius: 30px;
+}
+
+.logo {
+  background-image: url("../assets/pclogo.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 150px;
+  height: 70px;
+}
+
+.register-container h1 {
+  margin-bottom: 20px;
+  color: var(--text);
+  font-size: var(--h2-font);
+}
+
+.input-field {
+  width: 300px;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 20px;
+  font-size: 16px;
+}
+
+.auth-button {
+  width: 150px;
+  padding: 10px;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin: 5px 0;
+  font-size: var(--h4-font);
+}
+
+.auth-button:hover {
+  background-color: #f1f1f1;
+  color: var(--text);
+}
+
+.alternative-auth {
+  border-top: 2px solid #ccc;
+  border-bottom: 2px solid #ccc;
+  margin-top: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  padding: 10px;
+  color: var(--text);
+  background-color: #f1f1f1;
+  border: 1px solid var(--primary);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.google-button:hover {
+  background-color: var(--primary);
+  color: #f1f1f1;
+}
+
+.google-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.error-message {
+  color: var(--error);
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.toggle-auth {
+  margin-top: 10px;
+}
+
+.toggle-button {
+  background-color: transparent;
+  font-size: 16px;
+  color: var(--primary);
+}
