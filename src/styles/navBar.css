@@ -1,0 +1,78 @@
+.navbar {
+  background-color: var(--background);
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.navbar-logo {
+  width: 150px;
+  height: 120px;
+  margin-top: 0;
+}
+
+.navbar-search {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding-right: 7px;
+  border-radius: 30px;
+}
+
+input {
+  width: 300px;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 20px;
+  font-size: 16px;
+}
+
+.faSearch {
+  color: var(--background);
+  background-color: #fff;
+  font-size: var(--h3-font);
+  cursor: pointer;
+}
+
+.navbar-newpost {
+  display: flex;
+  align-items: center;
+  background-color: var(--background);
+  color: #fff;
+  font-size: var(--h3-font);
+  cursor: pointer;
+}
+
+.faPlus,
+.faComment,
+.faSmile {
+  color: #fff;
+  background-color: var(--background);
+  font-size: var(--h1-font);
+  padding-right: 5px;
+}
+
+.navbar-links {
+  display: flex;
+}
+
+.navbar-link {
+  margin: 20px;
+  display: flex;
+  align-items: center;
+  background-color: var(--background);
+  color: #fff;
+  font-size: var(--h3-font);
+  cursor: pointer;
+}
+
+.navbar-logout {
+  width: 100px;
+  padding: 10px;
+  background-color: var(--error);
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: var(--h4-font);
+}

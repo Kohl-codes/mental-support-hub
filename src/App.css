@@ -41,29 +41,8 @@ body {
   min-height: 100vh;
 }
 
-.sign-out {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 100;
-}
-
-.logout-button {
-  cursor: pointer;
-  font-size: var(--h2-font);
-  color: var(--accent-light);
-  background: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.logout-button:hover {
-  color: #e06773;
-}
-
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
