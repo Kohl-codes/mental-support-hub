@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "../configs/firebaseConfig";
 import { signOut } from 'firebase/auth'; 
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -7,13 +7,13 @@ import pclogo from '../assets/pclogo.png';
 import '../styles/navbar.css';  
 
 const NavBar = ({ setSearchResults, setCreatingPost }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   // Handle search functionality
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (searchQuery.trim() === '') return;
+    if (searchQuery.trim() === "") return;
 
     try {
       const postsRef = collection(db, 'forums');
@@ -22,13 +22,13 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
 
       const searchResults = querySnapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
 
       setSearchResults(searchResults);
       setSearchQuery('');
     } catch (error) {
-      console.error('Error searching posts: ', error);
+      console.error("Error searching posts: ", error);
     }
   };
 
@@ -38,7 +38,7 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
       await signOut(auth);
       navigate('/login');
     } catch (error) {
-      console.error('Error logging out: ', error);
+      console.error("Error logging out: ", error);
     }
   };
 
@@ -90,5 +90,6 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
     </nav>
   );
 };
+
 
 export default NavBar;

@@ -115,3 +115,77 @@
   font-size: 16px;
   color: var(--primary);
 }
+
+@media only screen and (max-width: 700px) {
+  .register-container {
+    width: 90%;
+  }
+
+  .logo {
+    background-image: url("../assets/mobilelogo.png");
+    width: 70px;
+    height: 70px;
+  }
+
+  .register-container h1 {
+    font-size: var(--h3-font);
+  }
+
+  .input-field {
+    width: 250px;
+    padding: 5px;
+    margin: 3px 0;
+  }
+
+  .auth-button {
+    width: 100px;
+    font-size: 16px;
+  }
+
+  .alternative-auth {
+    margin-top: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .google-button {
+    width: 200px;
+  }
+}
+
+@media only screen and (min-width: 701px) and (max-width: 1024px) {
+  .register-container {
+    width: 40%;
+  }
+
+  .logo {
+    background-image: url("../assets/mobilelogo.png");
+    width: 70px;
+    height: 70px;
+  }
+
+  .register-container h1 {
+    font-size: var(--h3-font);
+  }
+
+  .input-field {
+    width: 270px;
+    padding: 8px;
+    margin: 3px 0;
+  }
+
+  .auth-button {
+    width: 100px;
+    font-size: 16px;
+  }
+
+  .alternative-auth {
+    margin-top: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .google-button {
+    width: 200px;
+  }
+}

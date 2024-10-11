@@ -1,138 +1,78 @@
-/* General styling for the navbar */
 .navbar {
-    background-color: #2c3e50;
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    width: 100%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Navbar container for logo and elements */
-  .navbar-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
-  
-  /* Logo styling */
-  .navbar-logo {
-    flex: 1;
-  }
-  
-  .logo-image {
-    height: 50px;
-    width: auto;
-  }
-  
-  /* Search form styling */
-  .navbar-search {
-    flex: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .search-input {
-    width: 80%;
-    padding: 0.5rem;
-    border: none;
-    border-radius: 20px;
-    font-size: 1rem;
-  }
-  
-  .search-button {
-    background-color: #3498db;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 20px;
-    margin-left: 10px;
-    cursor: pointer;
-  }
-  
-  .search-button:hover {
-    background-color: #2980b9;
-  }
-  
-  /* Navbar links styling */
-  .navbar-links {
-    display: flex;
-    gap: 1rem;
-    flex: 1;
-    justify-content: center;
-  }
-  
-  .navbar-link {
-    color: white;
-    text-decoration: none;
-    font-size: 1rem;
-    padding: 0.5rem;
-    transition: color 0.3s ease;
-  }
-  
-  .navbar-link:hover {
-    color: #f39c12;
-  }
-  
-  /* New post button */
-  .navbar-newpost {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-  }
-  
-  .navbar-newpost:hover {
-    background-color: #c0392b;
-  }
-  
-  /* Logout button */
-  .navbar-logout {
-    background-color: #34495e;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    margin-left: 10px;
-  }
-  
-  .navbar-logout:hover {
-    background-color: #2c3e50;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .navbar-container {
-      flex-direction: column;
-    }
-  
-    .navbar-search {
-      width: 100%;
-      margin-top: 10px;
-    }
-  
-    .search-input {
-      width: 70%;
-    }
-  
-    .navbar-links {
-      flex-direction: column;
-      margin-top: 10px;
-    }
-  
-    .navbar-newpost,
-    .navbar-logout {
-      margin-top: 10px;
-      width: 100%;
-    }
-  }
-  
+  background-color: var(--background);
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.navbar-logo {
+  width: 150px;
+  height: 120px;
+  margin-top: 0;
+}
+
+.navbar-search {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding-right: 7px;
+  border-radius: 30px;
+}
+
+input {
+  width: 300px;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 20px;
+  font-size: 16px;
+}
+
+.faSearch {
+  color: var(--background);
+  background-color: #fff;
+  font-size: var(--h3-font);
+  cursor: pointer;
+}
+
+.navbar-newpost {
+  display: flex;
+  align-items: center;
+  background-color: var(--background);
+  color: #fff;
+  font-size: var(--h3-font);
+  cursor: pointer;
+}
+
+.faPlus,
+.faComment,
+.faSmile {
+  color: #fff;
+  background-color: var(--background);
+  font-size: var(--h1-font);
+  padding-right: 5px;
+}
+
+.navbar-links {
+  display: flex;
+}
+
+.navbar-link {
+  margin: 20px;
+  display: flex;
+  align-items: center;
+  background-color: var(--background);
+  color: #fff;
+  font-size: var(--h3-font);
+  cursor: pointer;
+}
+
+.navbar-logout {
+  width: 100px;
+  padding: 10px;
+  background-color: var(--error);
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: var(--h4-font);
+}
