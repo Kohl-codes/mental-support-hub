@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "../configs/firebaseConfig";
 import { signOut } from 'firebase/auth'; 
@@ -8,7 +8,34 @@ import '../styles/navBar.css';
 
 const NavBar = ({ setSearchResults, setCreatingPost }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [notifications, setNotifications] = useState([]); // State for notifications
+  const [showNotifications, setShowNotifications] = useState(false); // State for toggling notifications dropdown
   const navigate = useNavigate();
+
+  // Fetch notifications
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const userId = auth.currentUser?.uid; // Get the current user's ID
+      if (!userId) return;
+
+      try {
+        const notificationsRef = collection(db, 'notifications'); // Replace with your notifications collection
+        const q = query(notificationsRef, where('userId', '==', userId)); // Query for notifications for this user
+        const querySnapshot = await getDocs(q);
+
+        const fetchedNotifications = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setNotifications(fetchedNotifications);
+      } catch (error) {
+        console.error("Error fetching notifications: ", error);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
 
   // Handle search functionality
   const handleSearch = async (e) => {
@@ -42,6 +69,10 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
     }
   };
 
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -49,10 +80,10 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
         <div className="navbar-logo">
           <Link to="/">
             <img
-          src={pclogo}
-          alt="Logo"
-          className="logo-image"
-        />
+              src={pclogo}
+              alt="Logo"
+              className="logo-image"
+            />
           </Link>
         </div>
 
@@ -74,6 +105,26 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
           <Link to="/mood-tracker" className="navbar-link">Mood Tracker</Link>
         </div>
 
+        {/* Notifications Dropdown */}
+        <div className="notifications">
+          <button onClick={toggleNotifications} className="notifications-button">
+            Notifications ({notifications.length})
+          </button>
+          {showNotifications && (
+            <div className="notifications-dropdown">
+              {notifications.length > 0 ? (
+                notifications.map((notification) => (
+                  <div key={notification.id} className="notification-item">
+                    {notification.message}
+                  </div>
+                ))
+              ) : (
+                <div>No notifications</div>
+              )}
+            </div>
+          )}
+        </div>
+
         {/* New post button */}
         <button
           className="navbar-newpost"
@@ -90,6 +141,5 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
     </nav>
   );
 };
-
 
 export default NavBar;
