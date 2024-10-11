@@ -1,0 +1,75 @@
+/* General sidebar layout */
+.sidebar {
+    width: 250px;
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .profile-section {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .profile-picture {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 2px solid #ccc;
+  }
+  
+  .profile-section h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .profile-section p {
+    font-size: 14px;
+    color: #777;
+    margin-top: 5px;
+  }
+  
+  /* Recent chats and forums */
+  h4 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .recent-chats, .recent-forums {
+    margin-bottom: 30px;
+  }
+  
+  .chat-item, .forum-item {
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease;
+  }
+  
+  .chat-item:hover, .forum-item:hover {
+    background-color: #e0f7fa;
+  }
+  
+  .chat-item p, .forum-item p {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  p {
+    color: #999;
+    font-size: 12px;
+  }
+  

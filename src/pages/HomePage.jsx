@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { collection, addDoc, getDocs, updateDoc, doc, arrayUnion } from 'firebase/firestore';
 import { db } from "../configs/firebaseConfig";
+import '../styles/home.css';  
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);

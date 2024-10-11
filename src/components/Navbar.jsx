@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { auth, db } from "../configs/firebaseConfig";
 import { signOut } from 'firebase/auth'; 
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import pclogo from '../assets/pclogo.png'; 
+import '../styles/navbar.css';  
 
 const NavBar = ({ setSearchResults, setCreatingPost }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -14,7 +16,6 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
     if (searchQuery.trim() === '') return;
 
     try {
-      // Query the posts collection in Firestore to match the search query
       const postsRef = collection(db, 'forums');
       const q = query(postsRef, where('content', '>=', searchQuery));
       const querySnapshot = await getDocs(q);
@@ -23,9 +24,9 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
         id: doc.id,
         ...doc.data()
       }));
-      
+
       setSearchResults(searchResults);
-      setSearchQuery(''); // Clear the search input
+      setSearchQuery('');
     } catch (error) {
       console.error('Error searching posts: ', error);
     }
@@ -35,7 +36,7 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate('/login'); // Redirect to login page after successful logout
+      navigate('/login');
     } catch (error) {
       console.error('Error logging out: ', error);
     }
@@ -43,46 +44,49 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
 
   return (
     <nav className="navbar">
-      {/* Logo */}
-      <div className="navbar-logo">
-        <Link to="/">
-          <img src="/path-to-logo.png" alt="Logo" />
-        </Link>
-      </div>
-
-      {/* Search bar */}
-      <form className="navbar-search" onSubmit={handleSearch}>
-        <input
-          type="text"
-          placeholder="Search forums..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+      <div className="navbar-container">
+        {/* Logo */}
+        <div className="navbar-logo">
+          <Link to="/">
+            <img
+          src={pclogo}
+          alt="Logo"
+          className="logo-image"
         />
-        <button type="submit">Search</button>
-      </form>
+          </Link>
+        </div>
 
-      {/* New post button */}
-      <button
-        className="navbar-newpost"
-        onClick={() => setCreatingPost(true)} // Set state to show the post creation form
-      >
-        New Post
-      </button>
+        {/* Search bar */}
+        <form className="navbar-search" onSubmit={handleSearch}>
+          <input
+            type="text"
+            placeholder="Search forums..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          <button type="submit" className="search-button">Search</button>
+        </form>
 
-      {/* Links to ChatPage and MoodTracker */}
-      <div className="navbar-links">
-        <Link to="/chat" className="navbar-link">
-          Chat
-        </Link>
-        <Link to="/mood-tracker" className="navbar-link">
-          Mood Tracker
-        </Link>
+        {/* Links */}
+        <div className="navbar-links">
+          <Link to="/chat" className="navbar-link">Chat</Link>
+          <Link to="/mood-tracker" className="navbar-link">Mood Tracker</Link>
+        </div>
+
+        {/* New post button */}
+        <button
+          className="navbar-newpost"
+          onClick={() => setCreatingPost(true)}
+        >
+          New Post
+        </button>
+
+        {/* Logout button */}
+        <button className="navbar-logout" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
-
-      {/* Logout button */}
-      <button className="navbar-logout" onClick={handleLogout}>
-        Logout
-      </button>
     </nav>
   );
 };

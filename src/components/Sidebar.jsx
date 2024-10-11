@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { auth, db } from "../configs/firebaseConfig";
 import defaultProfilePic from '../assets/defaultPic.jpg'; 
+import '../styles/sidebar.css';  
 
 const Sidebar = () => {
   const [userProfile, setUserProfile] = useState({});
