@@ -9,9 +9,9 @@ const HomePage = () => {
   const [posts, setPosts] = useState([]);
   const [newPostContent, setNewPostContent] = useState('');
   const [selectedPost, setSelectedPost] = useState(null); // Track selected post for comments
-  const [newComment, setNewComment] = useState(''); // Track the new comment input
+  const [newComment, setNewComment] = useState('');
+  const [lovedPosts, setLovedPosts] = useState(new Set()); // Track posts loved by the user
 
-  // Default profile pic URL
   const defaultProfilePic = '/path/to/default-profile-pic.png'; 
 
   // Fetch posts from Firebase on component mount
@@ -33,11 +33,10 @@ const HomePage = () => {
     e.preventDefault();
     if (newPostContent.trim() === '') return;
 
-    // Add new post to Firebase
     try {
       const newPost = {
         author: 'Current User',  // Replace with dynamic user data
-        profilePic: 'path-to-profile-pic',  // Fetch from user profile
+        profilePic: 'path-to-profile-pic',
         time: new Date().toLocaleTimeString(),
         content: newPostContent,
         comments: [],
@@ -45,18 +44,21 @@ const HomePage = () => {
       };
       const docRef = await addDoc(collection(db, "forums"), newPost);
       setPosts([...posts, { id: docRef.id, ...newPost }]);
-      setNewPostContent(''); // Clear the input field
+      setNewPostContent('');
     } catch (error) {
       console.error("Error adding post: ", error);
     }
   };
 
-  // Handle love button click
+  // Handle love button click with limitation to one love per post
   const handleLoveClick = async (postId, currentLoves) => {
+    if (lovedPosts.has(postId)) return; // User already loved this post
+
     const postRef = doc(db, "forums", postId);
     try {
       await updateDoc(postRef, { loves: currentLoves + 1 });
       setPosts(posts.map(post => post.id === postId ? { ...post, loves: currentLoves + 1 } : post));
+      setLovedPosts(new Set([...lovedPosts, postId])); // Track that this post was loved
     } catch (error) {
       console.error("Error updating loves: ", error);
     }
@@ -68,7 +70,6 @@ const HomePage = () => {
 
     const postRef = doc(db, "forums", postId);
     try {
-      // Add new comment to the comments array in the post
       await updateDoc(postRef, {
         comments: arrayUnion({
           author: 'Current User', // Replace with dynamic user data
@@ -76,14 +77,12 @@ const HomePage = () => {
           text: newComment
         })
       });
-
-      // Update local state to reflect the new comment
       setPosts(posts.map(post => post.id === postId
         ? { ...post, comments: [...post.comments, { author: 'Current User', time: new Date().toLocaleTimeString(), text: newComment }] }
         : post
       ));
-      setNewComment(''); // Clear the comment input
-      setSelectedPost(null); // Close comment input for the post
+      setNewComment(''); 
+      setSelectedPost(null); 
     } catch (error) {
       console.error("Error adding comment: ", error);
     }
@@ -107,7 +106,6 @@ const HomePage = () => {
             </form>
           </div>
 
-          {/* Display posts */}
           <div className="posts">
             {posts.length === 0 ? (
               <p>No Forums Yet</p>
@@ -130,14 +128,26 @@ const HomePage = () => {
                   </div>
                   <div className="post-actions">
                     <span>{post.loves} 💖</span>
-                    <button onClick={() => handleLoveClick(post.id, post.loves)}>Love</button>
+                    <button onClick={() => handleLoveClick(post.id, post.loves)} disabled={lovedPosts.has(post.id)}>
+                      {lovedPosts.has(post.id) ? "Loved" : "Love"}
+                    </button>
 
                     <span>{post.comments.length} 💬</span>
-                    <button onClick={() => setSelectedPost(post.id)}>Comment</button>
+                    <button onClick={() => setSelectedPost(selectedPost === post.id ? null : post.id)}>
+                      {selectedPost === post.id ? "Hide Comments" : "Show Comments"}
+                    </button>
 
-                    {/* Show comment form if this post is selected */}
+                    {/* Show comments section if selected */}
                     {selectedPost === post.id && (
-                      <div className="comment-section">
+                      <div className="comments-section">
+                        <div className="comments">
+                          {post.comments.map((comment, index) => (
+                            <div key={index} className="comment">
+                              <p><strong>{comment.author}</strong> at {comment.time}</p>
+                              <p>{comment.text}</p>
+                            </div>
+                          ))}
+                        </div>
                         <textarea
                           placeholder="Write a comment..."
                           value={newComment}
@@ -146,16 +156,6 @@ const HomePage = () => {
                         <button onClick={() => handleCommentSubmit(post.id)}>Submit</button>
                       </div>
                     )}
-
-                    {/* Display comments */}
-                    <div className="comments">
-                      {post.comments.map((comment, index) => (
-                        <div key={index} className="comment">
-                          <p><strong>{comment.author}</strong> at {comment.time}</p>
-                          <p>{comment.text}</p>
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 </div>
               ))

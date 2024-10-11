@@ -4,7 +4,7 @@ import { auth, db } from "../configs/firebaseConfig";
 import { signOut } from 'firebase/auth'; 
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import pclogo from '../assets/pclogo.png'; 
-import '../styles/navbar.css';  
+import '../styles/navBar.css';  
 
 const NavBar = ({ setSearchResults, setCreatingPost }) => {
   const [searchQuery, setSearchQuery] = useState("");
