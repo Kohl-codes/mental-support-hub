@@ -133,7 +133,7 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
 
         {/* Links */}
         <div className="navbar-links">
-          <Link to="/chat" className="navbar-link">
+          <Link to="/chatmenu" className="navbar-link">
             <FontAwesomeIcon icon={faComment} className="faComment" />
             <div className="nav-words"> Chat</div>
           </Link>

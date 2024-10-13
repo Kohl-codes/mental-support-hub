@@ -6,6 +6,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 import AuthPage from "./pages/AuthPage";
 import HomePage from "./pages/HomePage";
 import ChatPage from "./pages/ChatPage";
+import ChatMenuPage from "./pages/ChatMenuPage"; 
 import ForumPage from "./pages/ForumPage";
 import MoodTrackerPage from "./pages/MoodTrackerPage";
 import AdminPage from "./pages/AdminPage";
@@ -30,7 +31,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={isAuth ? <HomePage setRoom={setRoom} /> : <AuthPage setIsAuth={setIsAuth} />} />
-        <Route path="/chat" element={isAuth && room ? <ChatPage room={room} /> : <AuthPage setIsAuth={setIsAuth} />} />
+        <Route path="/chat" element={isAuth && room ? <ChatPage room={room} /> : <ChatMenuPage setRoom={setRoom} />} /> {/* Updated Chat route */}
+        <Route path="/chatmenu" element={isAuth ? <ChatMenuPage setRoom={setRoom} /> : <AuthPage setIsAuth={setIsAuth} />} /> {/* New ChatMenuPage route */}
         <Route path="/forum" element={isAuth ? <ForumPage /> : <AuthPage setIsAuth={setIsAuth} />} />
         <Route path="/mood-tracker" element={isAuth ? <MoodTrackerPage /> : <AuthPage setIsAuth={setIsAuth} />} />
         <Route path="/admin" element={isAuth ? <AdminPage /> : <AuthPage setIsAuth={setIsAuth} />} />

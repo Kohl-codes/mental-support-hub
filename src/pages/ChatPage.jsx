@@ -165,7 +165,7 @@ const Chat = (props) => {
   };
 
   const goBack = () => {
-    navigate("/chatrooms");
+    navigate("/chatmenu");
   };
 
   const handleUserClick = (name) => {
