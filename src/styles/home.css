@@ -1,195 +1,206 @@
 /* General layout */
 .home-page {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    background-color: #f9f9f9;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main-content {
+  display: flex;
+}
+
+.posts-section {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: var(--accent2);
+}
+
+.post-creation {
+  background-color: var(--background);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+.post-creation h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.post-creation form {
+  display: flex;
+  flex-direction: column;
+}
+
+.post-creation textarea {
+  resize: none;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  height: 80px;
+}
+
+.post-creation button {
+  align-self: flex-end;
+  padding: 8px 12px;
+  background-color: var(--secondary);
+  color: var(--text);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.post-creation button:hover,
+.post-buttons button:hover,
+.comment-footer button:hover {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+/* Post layout */
+.post {
+  background-color: var(--accent);
+  padding: 15px;
+  border-radius: 20px;
+  box-shadow: 0 1px 4px rgba(167, 148, 148, 0.1);
+  margin: 0px 0px 20px 10%;
+  width: 80%;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.post-info h4 {
+  margin: 0;
+  font-size: var(--h4-font);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.post-info p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.post-content p {
+  margin: 20px 0 20px 45px;
+  font-size: var(--h4-font);
+  color: var(--text);
+}
+
+.post-actions {
+  display: flex;
+  flex-direction: column;
+}
+
+.post-stats {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.post-buttons {
+  justify-content: space-between;
+  padding: 0;
+}
+
+.post-buttons button {
+  border: 1px solid var(--primary);
+  background-color: var(--secondary);
+  color: var(--text);
+  border-radius: 0px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 50%;
+  font-size: 18px;
+  padding: 3px;
+}
+
+/* Comment layout */
+.comment-section {
+  margin-top: 10px;
+  flex-direction: column;
+}
+
+.comment-footer {
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-footer textarea {
+  width: 90%;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-left: 5%;
+  padding: 10px;
+  font-size: 14px;
+  margin-bottom: 5px;
+  resize: none;
+}
+
+.comment-footer button {
+  margin-left: 75%;
+  padding: 3px;
+  width: 20%;
+  border: none;
+  background-color: var(--secondary);
+  color: var(--text);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.comments {
+  margin-top: 10px;
+}
+
+.comment {
+  background-color: #f1f1f1;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.comment p {
+  margin: 0;
+  font-size: 12px;
+  color: #555;
+}
+
+.comment p strong {
+  color: #333;
+}
+
+@media screen and (max-width: 768px) {
   .main-content {
-    display: flex;
-    flex: 1;
-  }
-  
-  .posts-section {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-  }
-  
-  .post-creation {
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-  }
-  
-  .post-creation h3 {
-    font-size: 18px;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .post-creation form {
-    display: flex;
     flex-direction: column;
   }
-  
+
+  .posts-section {
+    padding: 10px;
+  }
+
   .post-creation textarea {
-    resize: none;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 10px;
-    font-size: 14px;
-    margin-bottom: 10px;
-    height: 80px;
+    height: 60px;
   }
-  
-  .post-creation button {
-    align-self: flex-end;
-    padding: 8px 12px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
-  .post-creation button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Post layout */
-  .post {
-    background-color: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-  }
-  
-  .post-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .profile-pic {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-  
-  .post-info h4 {
-    margin: 0;
-    font-size: 16px;
-    color: #333;
-  }
-  
-  .post-info p {
-    margin: 0;
-    font-size: 12px;
-    color: #888;
-  }
-  
-  .post-content p {
-    margin: 10px 0;
-    font-size: 14px;
-    color: #555;
-  }
-  
-  .post-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .post-actions span {
-    font-size: 14px;
-    color: #888;
-  }
-  
-  .post-actions button {
-    padding: 5px 10px;
-    border: none;
-    background-color: #e0f7fa;
-    color: #007bff;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
-  .post-actions button:hover {
-    background-color: #b2ebf2;
-  }
-  
-  .comment-section {
-    margin-top: 10px;
-  }
-  
+
   .comment-section textarea {
-    width: 100%;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 10px;
-    font-size: 14px;
-    margin-bottom: 5px;
-    resize: none;
+    height: 60px;
   }
-  
-  .comment-section button {
-    padding: 5px 10px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  
-  .comment-section button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Comments */
-  .comments {
-    margin-top: 10px;
-  }
-  
-  .comment {
-    background-color: #f1f1f1;
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 10px;
-  }
-  
-  .comment p {
-    margin: 0;
-    font-size: 12px;
-    color: #555;
-  }
-  
-  .comment p strong {
-    color: #333;
-  }
-  
-  @media screen and (max-width: 768px) {
-    .main-content {
-      flex-direction: column;
-    }
-  
-    .posts-section {
-      padding: 10px;
-    }
-  
-    .post-creation textarea {
-      height: 60px;
-    }
-  
-    .comment-section textarea {
-      height: 60px;
-    }
-  }
-  
+}

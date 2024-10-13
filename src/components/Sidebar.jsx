@@ -1,13 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import React, { useEffect, useState } from "react";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { auth, db } from "../configs/firebaseConfig";
-import defaultProfilePic from '../assets/defaultPic.jpg'; 
-import '../styles/sidebar.css';  
+import defaultProfilePic from "../assets/defaultPic.jpg";
+import "../styles/sidebar.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
 
 const Sidebar = () => {
-  const [userProfile, setUserProfile] = useState({});
+  const [userProfile, setUserProfile] = useState({ name: "", bio: "" });
   const [recentChats, setRecentChats] = useState([]);
   const [recentForums, setRecentForums] = useState([]);
+  const [isEditingBio, setIsEditingBio] = useState(false);
+  const [newBio, setNewBio] = useState(userProfile.bio || ""); // Pre-populate with existing bio
 
   // Fetch user profile data from Firebase
   useEffect(() => {
@@ -15,14 +28,16 @@ const Sidebar = () => {
       try {
         const user = auth.currentUser;
         if (user) {
-          const userRef = collection(db, 'users');
-          const q = query(userRef, where('uid', '==', user.uid));
+          const userRef = collection(db, "users");
+          const q = query(userRef, where("uid", "==", user.uid));
           const querySnapshot = await getDocs(q);
           const userData = querySnapshot.docs[0]?.data() || {};
           setUserProfile(userData);
+          console.log("Fetched user profile:", userData); // Log fetched user profile
+          setNewBio(userData.bio || ""); // Update newBio state
         }
       } catch (error) {
-        console.error('Error fetching user profile: ', error);
+        console.error("Error fetching user profile: ", error);
       }
     };
     fetchUserProfile();
@@ -32,7 +47,7 @@ const Sidebar = () => {
   useEffect(() => {
     const fetchRecentChats = async () => {
       try {
-        const chatsRef = collection(db, 'chats');
+        const chatsRef = collection(db, "chats");
         const querySnapshot = await getDocs(chatsRef);
         const chats = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -40,7 +55,7 @@ const Sidebar = () => {
         }));
         setRecentChats(chats);
       } catch (error) {
-        console.error('Error fetching recent chats: ', error);
+        console.error("Error fetching recent chats: ", error);
       }
     };
     fetchRecentChats();
@@ -50,7 +65,7 @@ const Sidebar = () => {
   useEffect(() => {
     const fetchRecentForums = async () => {
       try {
-        const forumsRef = collection(db, 'forums');
+        const forumsRef = collection(db, "forums");
         const querySnapshot = await getDocs(forumsRef);
         const forums = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -58,11 +73,36 @@ const Sidebar = () => {
         }));
         setRecentForums(forums);
       } catch (error) {
-        console.error('Error fetching recent forums: ', error);
+        console.error("Error fetching recent forums: ", error);
       }
     };
     fetchRecentForums();
   }, []);
+
+  const handleEditBioClick = () => {
+    setIsEditingBio(!isEditingBio);
+  };
+
+  const handleBioChange = (event) => {
+    setNewBio(event.target.value);
+  };
+
+  const handleSaveBio = async () => {
+    console.log("Saving bio:", newBio);
+    if (!userProfile.uid) {
+      console.error("User profile data not available yet.");
+      return; // Exit early if uid is not available
+    }
+
+    try {
+      const userRef = doc(db, "users", userProfile.uid);
+      await updateDoc(userRef, { bio: newBio });
+      setUserProfile((prevProfile) => ({ ...prevProfile, bio: newBio }));
+      setIsEditingBio(false);
+    } catch (error) {
+      console.error("Error saving bio: ", error);
+    }
+  };
 
   return (
     <div className="sidebar">
@@ -73,8 +113,28 @@ const Sidebar = () => {
           alt="User Profile"
           className="profile-picture"
         />
-        <h3>{userProfile.username || 'Anonymous'}</h3>
-        <p>{userProfile.bio || 'No bio available.'}</p>
+        <div className="bio">
+          <h3>{userProfile.username || "Anonymous"}</h3>
+          <button onClick={handleEditBioClick}>
+            {isEditingBio ? (
+              <FontAwesomeIcon icon={faXmark} className="bio-icons" />
+            ) : (
+              <FontAwesomeIcon icon={faEdit} className="bio-icons" />
+            )}
+          </button>
+        </div>
+        {isEditingBio ? (
+          <div className="bio-edit-container">
+            <textarea
+              value={newBio}
+              onChange={handleBioChange}
+              placeholder="Enter your bio"
+            />
+            <button onClick={handleSaveBio}>Save</button>
+          </div>
+        ) : (
+          <p>{userProfile.bio || "No bio available."}</p>
+        )}
       </div>
 
       {/* Recent Chats Section */}

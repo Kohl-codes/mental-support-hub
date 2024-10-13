@@ -1,75 +1,111 @@
 /* General sidebar layout */
 .sidebar {
-    width: 250px;
-    background-color: #f5f5f5;
-    padding: 20px;
-    border-right: 1px solid #ddd;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  
-  .profile-section {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  
-  .profile-picture {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-    border: 2px solid #ccc;
-  }
-  
-  .profile-section h3 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-  }
-  
-  .profile-section p {
-    font-size: 14px;
-    color: #777;
-    margin-top: 5px;
-  }
-  
-  /* Recent chats and forums */
-  h4 {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .recent-chats, .recent-forums {
-    margin-bottom: 30px;
-  }
-  
-  .chat-item, .forum-item {
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.2s ease;
-  }
-  
-  .chat-item:hover, .forum-item:hover {
-    background-color: #e0f7fa;
-  }
-  
-  .chat-item p, .forum-item p {
-    margin: 0;
-    font-size: 14px;
-    color: #555;
-  }
-  
-  p {
-    color: #999;
-    font-size: 12px;
-  }
-  
+  width: 250px;
+  border-right: 1px solid #ddd;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: var(--primary);
+}
+
+.profile-section {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.profile-picture {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border: 2px solid #ccc;
+}
+
+.profile-section h3 {
+  margin: 0;
+  font-size: var(--h4-font);
+  font-weight: 600;
+}
+
+.profile-section p {
+  font-size: 14px;
+  margin-top: 5px;
+  color: var(--primary);
+}
+
+.bio {
+  display: flex;
+  justify-content: center;
+}
+
+.bio-edit-container textarea {
+  width: 90%;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-left: 5%;
+  padding: 10px;
+  font-size: 14px;
+  margin-bottom: 5px;
+  resize: none;
+}
+
+.bio-edit-container button {
+  width: 30%;
+  border-radius: 6px;
+  padding: 5px;
+  font-size: 14px;
+  color: #fff;
+  background-color: var(--primary);
+}
+
+.bio-icons {
+  color: var(--text);
+  padding: 5px;
+  font-size: 20px;
+  background-color: #fff;
+}
+
+/* Recent chats and forums */
+h4 {
+  font-size: var(--h4-font);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.recent-chats,
+.recent-forums {
+  margin-bottom: 30px;
+  padding-top: 10px;
+  border-top: solid 1px var(--primary);
+  color: var(--text);
+}
+
+.chat-item,
+.forum-item {
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.chat-item:hover,
+.forum-item:hover {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.chat-item p,
+.forum-item p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text);
+}
+
+p {
+  color: #999;
+  font-size: 12px;
+}

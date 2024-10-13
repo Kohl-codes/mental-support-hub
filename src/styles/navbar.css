@@ -1,4 +1,4 @@
-.navbar {
+.navbar-container {
   background-color: var(--background);
   height: 90px;
   display: flex;
@@ -6,9 +6,9 @@
   justify-content: space-around;
 }
 
-.navbar-logo {
+.logo-pc {
   width: 150px;
-  height: 120px;
+  height: 170px;
   margin-top: 0;
 }
 
@@ -46,11 +46,17 @@ input {
 
 .faPlus,
 .faComment,
-.faSmile {
+.faSmile,
+.faBell {
   color: #fff;
   background-color: var(--background);
-  font-size: var(--h1-font);
+  font-size: var(--h2-font);
   padding-right: 5px;
+}
+
+.faBars,
+.logo-mobile {
+  display: none;
 }
 
 .navbar-links {
@@ -77,35 +83,40 @@ input {
   font-size: var(--h4-font);
 }
 
-
-/* notif semi design */
 .notifications {
-    position: relative;
-  }
-  
-  .notifications-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .notifications-dropdown {
-    position: absolute;
-    top: 100%; /* Position it below the button */
-    right: 0; /* Align to the right */
-    background-color: white; /* Dropdown background */
-    border: 1px solid #ccc; /* Border for dropdown */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-    z-index: 1000; /* Make sure it appears above other elements */
-    width: 200px; /* Width of the dropdown */
-  }
-  
-  .notification-item {
-    padding: 10px; /* Padding for each notification */
-    border-bottom: 1px solid #eee; /* Bottom border for separation */
-  }
-  
-  .notification-item:last-child {
-    border-bottom: none; /* No border for the last item */
-  }
-  
+  position: relative;
+}
+
+.notifications-button {
+  width: 100px;
+  background-color: var(--background);
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: var(--h4-font);
+}
+
+.notifications-dropdown {
+  position: absolute;
+  top: 100%; /* Position it below the button */
+  right: 0; /* Align to the right */
+  background-color: var(--background); /* Dropdown background */
+  color: var(--primary);
+  border: 1px solid #ccc; /* Border for dropdown */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  z-index: 1000; /* Make sure it appears above other elements */
+  width: 300px; /* Width of the dropdown */
+  padding: 10px 10px 10px 10px;
+}
+
+.notification-item {
+  padding: 10px; /* Padding for each notification */
+  border-bottom: 1px solid #eee; /* Bottom border for separation */
+}
+
+.notification-item:last-child {
+  border-bottom: none; /* No border for the last item */
+}
+
+@media only screen and (max-width: 768px) {
+}
