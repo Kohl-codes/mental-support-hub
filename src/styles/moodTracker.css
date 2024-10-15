@@ -1,0 +1,75 @@
+/* moodTracker.css */
+
+
+  
+  .mood-tracker-container {
+    max-width: 600px; /* Center and constrain width */
+    margin: 0 auto; /* Center the container */
+    padding: 20px;
+    background-color: white; /* White background for the container */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  }
+
+  
+  .mood-selection {
+    display: flex;
+    justify-content: space-between; /* Space out buttons evenly */
+    margin: 20px 0; /* Add margin for spacing */
+  }
+  
+  .mood-button {
+    flex: 1; /* Allow buttons to stretch equally */
+    margin: 0 10px; /* Margin between buttons */
+    padding: 15px; /* Padding for button */
+    border: none; /* Remove default border */
+    border-radius: 8px; /* Rounded corners for buttons */
+    color: white; /* Text color */
+    font-size: 1.2em; /* Larger font for readability */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: transform 0.2s; /* Smooth scaling effect on hover */
+  }
+  
+  .mood-button:hover {
+    transform: scale(1.05); /* Slightly scale up on hover */
+  }
+  
+  .mood-button.selected {
+    border: 2px solid white; /* Highlight selected button */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Subtle glow effect */
+  }
+  
+  .loading-message {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.2em; /* Increase font size */
+    color: #ff9800; /* Orange color for loading message */
+  }
+  
+  h2 {
+    margin-top: 40px; /* Space above the mood history section */
+    color: #555; /* Darker gray for subtitles */
+  }
+  
+  .mood-history-list {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove padding */
+  }
+  
+  .mood-history-item {
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Center items vertically */
+    margin: 10px 0; /* Space between items */
+    padding: 10px; /* Padding around each item */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light background for history items */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  }
+  
+  .mood-history-color {
+    width: 20px; /* Fixed width for color indicator */
+    height: 20px; /* Fixed height for color indicator */
+    border-radius: 50%; /* Circular color indicator */
+    margin-right: 10px; /* Space between color indicator and text */
+  }
+  
