@@ -8,12 +8,51 @@ import {
   updateDoc,
   doc,
   arrayUnion,
+  getDoc,
 } from "firebase/firestore";
 import { db, auth } from "../configs/firebaseConfig";
 import "../styles/home.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
-import { getDoc } from "firebase/firestore";
+
+
+
+// ReportModal Component
+const ReportModal = ({ isOpen, onClose, onSubmit }) => {
+  const [reportReason, setReportReason] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (reportReason.trim()) {
+      onSubmit(reportReason);
+      setReportReason("");
+      onClose();
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal">
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <header className="modal-header">
+            <h2>Report Post</h2>
+            <button className="closebtn" onClick={onClose}>×</button>
+          </header>
+          <form onSubmit={handleSubmit}>
+            <textarea
+              placeholder="Reason for reporting..."
+              value={reportReason}
+              onChange={(e) => setReportReason(e.target.value)}
+            />
+            <button type="submit">Submit Report</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
@@ -23,6 +62,8 @@ const HomePage = () => {
   const [lovedPosts, setLovedPosts] = useState(new Set());
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [reportPostId, setReportPostId] = useState(null);
 
   const defaultProfilePic = "/path/to/default-profile-pic.png";
 
@@ -63,8 +104,8 @@ const HomePage = () => {
 
     try {
       const newPost = {
-        author: userProfile.name || "Anonymous User", // Use the logged-in user's name
-        profilePic: userProfile.profilePic || defaultProfilePic, // Use the user's profile picture
+        author: userProfile.name || "Anonymous User",
+        profilePic: userProfile.profilePic || defaultProfilePic,
         time: new Date().toLocaleTimeString(),
         content: newPostContent,
         comments: [],
@@ -104,7 +145,7 @@ const HomePage = () => {
     try {
       await updateDoc(postRef, {
         comments: arrayUnion({
-          author: userProfile.name || "Anonymous User", // Use the logged-in user's name
+          author: userProfile.name || "Anonymous User",
           time: new Date().toLocaleTimeString(),
           text: newComment,
         }),
@@ -133,8 +174,18 @@ const HomePage = () => {
     }
   };
 
+  const handleReportSubmit = (reason) => {
+    console.log(`Reported post ${reportPostId} for reason: ${reason}`);
+    // Here you can add logic to save the report to your database or notify an admin.
+  };
+
   const togglePostOptions = (postId) => {
-    setOpenDropdownId(openDropdownId === postId ? null : postId);
+    if (openDropdownId === postId) {
+      setOpenDropdownId(null);
+    } else {
+      setOpenDropdownId(postId);
+      setReportPostId(postId);
+    }
   };
 
   return (
@@ -160,6 +211,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
+
         <div className="posts-section">
           <div className="post-creation">
             <h3>Create a New Post</h3>
@@ -201,7 +253,7 @@ const HomePage = () => {
                       </button>
                       {openDropdownId === post.id && (
                         <div className="options-dropdown">
-                          <button>Report</button>
+                          <button onClick={() => setIsReportModalOpen(true)}>Report</button>
                         </div>
                       )}
                     </div>
@@ -238,27 +290,31 @@ const HomePage = () => {
 
                     {selectedPost === post.id && (
                       <div className="comments-section">
-                        <div className="comments">
-                          {post.comments.map((comment, index) => (
+                        {post.comments.length === 0 ? (
+                          <p>No Comments Yet</p>
+                        ) : (
+                          post.comments.map((comment, index) => (
                             <div key={index} className="comment">
-                              <p>
-                                <strong>{comment.author}</strong> at{" "}
-                                {comment.time}
-                              </p>
+                              <strong>{comment.author}</strong>
                               <p>{comment.text}</p>
+                              <span>{comment.time}</span>
                             </div>
-                          ))}
-                        </div>
-                        <div className="comment-footer">
-                          <textarea
-                            placeholder="Write a comment..."
+                          ))
+                        )}
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            handleCommentSubmit(post.id);
+                          }}
+                        >
+                          <input
+                            type="text"
+                            placeholder="Add a comment..."
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
-                          ></textarea>
-                          <button onClick={() => handleCommentSubmit(post.id)}>
-                            Submit
-                          </button>
-                        </div>
+                          />
+                          <button type="submit">Comment</button>
+                        </form>
                       </div>
                     )}
                   </div>
@@ -268,6 +324,12 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+
+      <ReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        onSubmit={handleReportSubmit}
+      />
     </div>
   );
 };
