@@ -9,6 +9,24 @@
   display: flex;
 }
 
+.profile-btn {
+  display: none;
+}
+
+.profile-btn {
+  width: 80px;
+  padding: 8px 12px;
+  background-color: var(--secondary);
+  color: var(--text);
+  font-size: 18px;
+  position: fixed;
+  border: 1px var(--primary) solid;
+}
+
+header {
+  display: none;
+}
+
 .posts-section {
   flex: 1;
   padding: 20px;
@@ -102,6 +120,7 @@
   margin: 20px 0 20px 45px;
   font-size: var(--h4-font);
   color: var(--text);
+  word-wrap: break-word;
 }
 
 .post-actions {
@@ -164,6 +183,7 @@
   border-radius: 6px;
   cursor: pointer;
   font-size: 18px;
+  border: 1px solid var(--primary);
 }
 
 .comments {
@@ -187,7 +207,123 @@
   color: #333;
 }
 
+.post-options {
+  position: relative;
+  left: 75%;
+}
+
+.options-btn {
+  background-color: transparent;
+  color: var(--text);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 30px;
+}
+
+.options-dropdown {
+  position: absolute;
+  top: 100%; /* Position it below the button */
+  right: 0; /* Align to the right */
+  background-color: var(--background); /* Dropdown background */
+  color: var(--primary);
+  border: 1px solid #ccc; /* Border for dropdown */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  width: 100px; /* Width of the dropdown */
+  padding: 10px 10px 10px 10px;
+}
+
+.options-dropdown button {
+  background-color: var(--background);
+  color: var(--text);
+}
+
 @media screen and (max-width: 768px) {
+  /* MODAL FOR SIDEBAR */
+  @-webkit-keyframes example {
+    from {
+      top: -100px;
+      opacity: 0;
+    }
+    to {
+      top: 0px;
+      opacity: 1;
+    }
+  }
+
+  .profile-btn,
+  .modal {
+    display: block;
+  }
+
+  @keyframes example {
+    from {
+      top: -100px;
+      opacity: 0;
+    }
+    to {
+      top: 0px;
+      opacity: 1;
+    }
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1000; /* Make sure it appears above other elements */
+  }
+
+  .modal:target {
+    display: table;
+    position: absolute;
+  }
+
+  .modal-dialog {
+    padding-top: 20px;
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  .modal-dialog .modal-content {
+    margin: auto;
+    background-color: var(--background);
+    position: relative;
+    padding: 0;
+    outline: 0;
+    border: 1px var(--primary) solid;
+    text-align: justify;
+    width: 90%;
+    align-self: center;
+    -webkit-animation-name: example;
+    -webkit-animation-duration: 0.5s;
+  }
+
+  .closebtn {
+    text-decoration: none;
+    float: right;
+    font-size: 35px;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  header {
+    background-color: var(--primary);
+    font-size: 20px;
+    color: white;
+    display: block;
+  }
+
+  .container {
+    padding: 6px;
+  }
+
+  /* FOR POSTS SECTION */
   .main-content {
     flex-direction: column;
   }
@@ -197,10 +333,55 @@
   }
 
   .post-creation textarea {
-    height: 60px;
+    height: 80px;
   }
 
   .comment-section textarea {
     height: 60px;
+  }
+
+  .post-buttons button {
+    font-size: 11px;
+  }
+
+  .post-content p {
+    margin: 20px 0 20px 20px;
+  }
+
+  .post-stats {
+    font-size: 12px;
+  }
+
+  .post {
+    margin: 0px 0px 20px 5%;
+    width: 90%;
+  }
+
+  .comment-footer button {
+    margin-left: 75%;
+    padding: 3px;
+    width: 20%;
+    font-size: 11px;
+  }
+}
+
+@media only screen and (max-width: 330px) {
+  .post-options {
+    left: 20%;
+  }
+  .options-btn {
+    font-size: 20px;
+  }
+}
+
+@media only screen and (min-width: 340px) and (max-width: 600px) {
+  .post-options {
+    left: 32%;
+  }
+}
+
+@media only screen and (min-width: 601px) and (max-width: 1030px) {
+  .post-options {
+    left: 67%;
   }
 }

@@ -81,22 +81,6 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
     setShowNotifications(!showNotifications);
   };
 
-  const toggleMobileMenu = () => {
-    const navbarLogout = document.querySelector(".navbar-logout");
-    const isDesktop = window.innerWidth >= 700;
-
-    if (isDesktop) {
-      // On desktop, always show the navbar content
-      navbarLogout.style.display = "flex";
-    } else {
-      if (navbarLogout.style.display === "flex") {
-        navbarLogout.style.display = "none";
-      } else {
-        navbarLogout.style.display = "flex";
-      }
-    }
-  };
-
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -167,9 +151,9 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
           )}
         </div>
 
-        <button className="mobile-menu-button" onClick={toggleMobileMenu}>
+        {/* <button className="mobile-menu-button" onClick={toggleMobileMenu}>
           <FontAwesomeIcon icon={faBars} className="faBars" />
-        </button>
+        </button> */}
 
         {/* Logout button */}
         <button className="navbar-logout" onClick={handleLogout}>

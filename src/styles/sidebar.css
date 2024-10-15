@@ -3,7 +3,7 @@
   width: 250px;
   border-right: 1px solid #ddd;
   height: 100vh;
-  display: flex;
+  display: block;
   flex-direction: column;
   justify-content: space-between;
   color: var(--primary);
@@ -108,4 +108,32 @@ h4 {
 p {
   color: #999;
   font-size: 12px;
+}
+
+@media only screen and (max-width: 330px) {
+  .sidebar {
+    display: none;
+    margin-left: 4%;
+  }
+}
+
+@media only screen and (min-width: 340px) and (max-width: 400px) {
+  .sidebar {
+    display: none;
+    margin-left: 10%;
+  }
+}
+
+@media only screen and (min-width: 401px) and (max-width: 600px) {
+  .sidebar {
+    display: none;
+    margin-left: 15%;
+  }
+}
+
+@media only screen and (min-width: 601px) and (max-width: 800px) {
+  .sidebar {
+    display: none;
+    margin-left: 30%;
+  }
 }

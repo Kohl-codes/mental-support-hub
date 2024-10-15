@@ -11,6 +11,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../configs/firebaseConfig";
 import "../styles/home.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
@@ -18,6 +20,7 @@ const HomePage = () => {
   const [selectedPost, setSelectedPost] = useState(null); // Track selected post for comments
   const [newComment, setNewComment] = useState("");
   const [lovedPosts, setLovedPosts] = useState(new Set()); // Track posts loved by the user
+  const [openDropdownId, setOpenDropdownId] = useState(null); // Track the ID of the open dropdown
 
   const defaultProfilePic = "/path/to/default-profile-pic.png";
 
@@ -112,11 +115,33 @@ const HomePage = () => {
     }
   };
 
+  const togglePostOptions = (postId) => {
+    setOpenDropdownId(openDropdownId === postId ? null : postId);
+  };
+
   return (
     <div className="home-page">
       <Navbar />
       <div className="main-content">
-        <Sidebar />
+        <a href="#id01" className="profile-btn">
+          Profile
+        </a>
+
+        <div id="id01" class="modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <header class="container">
+                <a href="#" class="closebtn">
+                  ×
+                </a>
+                <h2>Profile</h2>
+              </header>
+              <div class="container">
+                <Sidebar />
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="posts-section">
           <div className="post-creation">
             <h3>Create a New Post</h3>
@@ -147,6 +172,23 @@ const HomePage = () => {
                     <div className="post-info">
                       <h4>{post.author}</h4>
                       <p>{post.time}</p>
+                    </div>
+                    {/* Post Options Dropdown */}
+                    <div className="post-options">
+                      <button
+                        onClick={() => togglePostOptions(post.id)}
+                        className="options-btn"
+                      >
+                        <FontAwesomeIcon
+                          icon={faEllipsis}
+                          className="faEllipsis"
+                        />
+                      </button>
+                      {openDropdownId === post.id && (
+                        <div className="options-dropdown">
+                          <button>Report</button>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="post-content">

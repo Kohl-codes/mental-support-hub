@@ -13,7 +13,6 @@ import "../styles/sidebar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
 
 const Sidebar = () => {
   const [userProfile, setUserProfile] = useState({ name: "", bio: "" });
