@@ -5,7 +5,6 @@ import {
   query,
   onSnapshot,
   addDoc,
-  where,
   doc,
   getDoc,
 } from "firebase/firestore";
@@ -17,8 +16,12 @@ const ChatMenuPage = ({ setRoom }) => {
   const [newRoomName, setNewRoomName] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordProtected, setIsPasswordProtected] = useState(false);
+  const [posts, setPosts] = useState([]); // State to manage forum posts
+  const [newPost, setNewPost] = useState(""); // State for new post input
   const navigate = useNavigate();
   const chatroomsRef = collection(db, "chatrooms");
+  const postsRef = collection(db, "posts"); // Collection for forum posts
+  const currentUser = auth.currentUser; // Get the current user
 
   // Fetch existing chatrooms
   useEffect(() => {
@@ -29,6 +32,20 @@ const ChatMenuPage = ({ setRoom }) => {
         chatrooms.push({ ...doc.data(), id: doc.id });
       });
       setRooms(chatrooms);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Fetch forum posts
+  useEffect(() => {
+    const q = query(postsRef);
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      let forumPosts = [];
+      snapshot.forEach((doc) => {
+        forumPosts.push({ ...doc.data(), id: doc.id });
+      });
+      setPosts(forumPosts);
     });
 
     return () => unsubscribe();
@@ -46,7 +63,7 @@ const ChatMenuPage = ({ setRoom }) => {
       await addDoc(chatroomsRef, {
         name: newRoomName,
         password: isPasswordProtected ? password : null,
-        createdBy: auth.currentUser.displayName,
+        createdBy: currentUser.displayName,
       });
       setRoom(newRoomName);
       navigate(`/chat`);
@@ -55,9 +72,25 @@ const ChatMenuPage = ({ setRoom }) => {
     }
   };
 
+  // Handle joining a chatroom
   const handleJoinRoom = (roomName) => {
     setRoom(roomName);
     navigate(`/chat`);
+  };
+
+  // Handle creating a new forum post
+  const handleCreatePost = async (e) => {
+    e.preventDefault();
+    if (!newPost) return;
+
+    await addDoc(postsRef, {
+      content: newPost,
+      createdBy: currentUser.displayName,
+      createdById: currentUser.uid, // Store the user's ID
+      createdAt: new Date(), // Timestamp for the post
+    });
+
+    setNewPost(""); // Clear the input field
   };
 
   return (
@@ -101,6 +134,30 @@ const ChatMenuPage = ({ setRoom }) => {
         )}
         <button type="submit">Create Room</button>
       </form>
+
+      <h2>Forum</h2>
+      <form onSubmit={handleCreatePost} className="post-form">
+        <input
+          type="text"
+          placeholder="Write a post..."
+          value={newPost}
+          onChange={(e) => setNewPost(e.target.value)}
+          required
+        />
+        <button type="submit">Post</button>
+      </form>
+
+      <div className="post-list">
+        {posts.map((post) => (
+          <div key={post.id} className="post-item">
+            <p>{post.content}</p>
+            <small>Posted by {post.createdBy} on {new Date(post.createdAt).toLocaleString()}</small>
+            {post.createdById === currentUser.uid && ( // Check if the post was created by the current user
+              <span className="your-post"> (Your Post)</span>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
