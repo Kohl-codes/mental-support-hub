@@ -9,20 +9,38 @@ import {
   doc,
   arrayUnion,
 } from "firebase/firestore";
-import { db } from "../configs/firebaseConfig";
+import { db, auth } from "../configs/firebaseConfig";
 import "../styles/home.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { getDoc } from "firebase/firestore";
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
   const [newPostContent, setNewPostContent] = useState("");
-  const [selectedPost, setSelectedPost] = useState(null); // Track selected post for comments
+  const [selectedPost, setSelectedPost] = useState(null);
   const [newComment, setNewComment] = useState("");
-  const [lovedPosts, setLovedPosts] = useState(new Set()); // Track posts loved by the user
-  const [openDropdownId, setOpenDropdownId] = useState(null); // Track the ID of the open dropdown
+  const [lovedPosts, setLovedPosts] = useState(new Set());
+  const [openDropdownId, setOpenDropdownId] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
 
   const defaultProfilePic = "/path/to/default-profile-pic.png";
+
+  // Fetch the logged-in user's profile from Firebase
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          setUserProfile(userDoc.data());
+        }
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   // Fetch posts from Firebase on component mount
   useEffect(() => {
@@ -41,12 +59,12 @@ const HomePage = () => {
   // Handle post creation
   const handlePostSubmit = async (e) => {
     e.preventDefault();
-    if (newPostContent.trim() === "") return;
+    if (newPostContent.trim() === "" || !userProfile) return;
 
     try {
       const newPost = {
-        author: "Current User", // Replace with dynamic user data
-        profilePic: "path-to-profile-pic",
+        author: userProfile.name || "Anonymous User", // Use the logged-in user's name
+        profilePic: userProfile.profilePic || defaultProfilePic, // Use the user's profile picture
         time: new Date().toLocaleTimeString(),
         content: newPostContent,
         comments: [],
@@ -62,7 +80,7 @@ const HomePage = () => {
 
   // Handle love button click with limitation to one love per post
   const handleLoveClick = async (postId, currentLoves) => {
-    if (lovedPosts.has(postId)) return; // User already loved this post
+    if (lovedPosts.has(postId)) return;
 
     const postRef = doc(db, "forums", postId);
     try {
@@ -72,7 +90,7 @@ const HomePage = () => {
           post.id === postId ? { ...post, loves: currentLoves + 1 } : post
         )
       );
-      setLovedPosts(new Set([...lovedPosts, postId])); // Track that this post was loved
+      setLovedPosts(new Set([...lovedPosts, postId]));
     } catch (error) {
       console.error("Error updating loves: ", error);
     }
@@ -80,13 +98,13 @@ const HomePage = () => {
 
   // Handle comment submit
   const handleCommentSubmit = async (postId) => {
-    if (newComment.trim() === "") return;
+    if (newComment.trim() === "" || !userProfile) return;
 
     const postRef = doc(db, "forums", postId);
     try {
       await updateDoc(postRef, {
         comments: arrayUnion({
-          author: "Current User", // Replace with dynamic user data
+          author: userProfile.name || "Anonymous User", // Use the logged-in user's name
           time: new Date().toLocaleTimeString(),
           text: newComment,
         }),
@@ -99,7 +117,7 @@ const HomePage = () => {
                 comments: [
                   ...post.comments,
                   {
-                    author: "Current User",
+                    author: userProfile.name || "Anonymous User",
                     time: new Date().toLocaleTimeString(),
                     text: newComment,
                   },
@@ -127,16 +145,16 @@ const HomePage = () => {
           Profile
         </a>
 
-        <div id="id01" class="modal">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <header class="container">
-                <a href="#" class="closebtn">
+        <div id="id01" className="modal">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <header className="container">
+                <a href="#" className="closebtn">
                   ×
                 </a>
                 <h2>Profile</h2>
               </header>
-              <div class="container">
+              <div className="container">
                 <Sidebar />
               </div>
             </div>
@@ -163,9 +181,7 @@ const HomePage = () => {
                 <div key={post.id} className="post">
                   <div className="post-header">
                     <img
-                      src={
-                        post.profilePic ? post.profilePic : defaultProfilePic
-                      }
+                      src={post.profilePic ? post.profilePic : defaultProfilePic}
                       alt={post.author}
                       className="profile-pic"
                     />
@@ -173,7 +189,6 @@ const HomePage = () => {
                       <h4>{post.author}</h4>
                       <p>{post.time}</p>
                     </div>
-                    {/* Post Options Dropdown */}
                     <div className="post-options">
                       <button
                         onClick={() => togglePostOptions(post.id)}
@@ -221,7 +236,6 @@ const HomePage = () => {
                       </button>
                     </div>
 
-                    {/* Show comments section if selected */}
                     {selectedPost === post.id && (
                       <div className="comments-section">
                         <div className="comments">

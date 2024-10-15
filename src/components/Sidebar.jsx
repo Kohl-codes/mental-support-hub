@@ -11,15 +11,14 @@ import { auth, db } from "../configs/firebaseConfig";
 import defaultProfilePic from "../assets/defaultPic.jpg";
 import "../styles/sidebar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-solid-svg-icons";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const Sidebar = () => {
-  const [userProfile, setUserProfile] = useState({ name: "", bio: "" });
+  const [userProfile, setUserProfile] = useState({ uid: "", name: "", bio: "" });
   const [recentChats, setRecentChats] = useState([]);
   const [recentForums, setRecentForums] = useState([]);
   const [isEditingBio, setIsEditingBio] = useState(false);
-  const [newBio, setNewBio] = useState(userProfile.bio || ""); // Pre-populate with existing bio
+  const [newBio, setNewBio] = useState(""); // Pre-populate with existing bio
 
   // Fetch user profile data from Firebase
   useEffect(() => {
@@ -31,9 +30,13 @@ const Sidebar = () => {
           const q = query(userRef, where("uid", "==", user.uid));
           const querySnapshot = await getDocs(q);
           const userData = querySnapshot.docs[0]?.data() || {};
-          setUserProfile(userData);
-          console.log("Fetched user profile:", userData); // Log fetched user profile
-          setNewBio(userData.bio || ""); // Update newBio state
+          
+          // Ensure we have the uid in the profile for update purposes
+          setUserProfile({ ...userData, uid: user.uid });
+          console.log("Fetched user profile:", userData); 
+          
+          // Update newBio state with fetched bio
+          setNewBio(userData.bio || "");
         }
       } catch (error) {
         console.error("Error fetching user profile: ", error);
@@ -88,6 +91,7 @@ const Sidebar = () => {
 
   const handleSaveBio = async () => {
     console.log("Saving bio:", newBio);
+
     if (!userProfile.uid) {
       console.error("User profile data not available yet.");
       return; // Exit early if uid is not available
