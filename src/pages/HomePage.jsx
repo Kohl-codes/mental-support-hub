@@ -15,8 +15,6 @@ import "../styles/home.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 
-
-
 // ReportModal Component
 const ReportModal = ({ isOpen, onClose, onSubmit }) => {
   const [reportReason, setReportReason] = useState("");
@@ -38,7 +36,9 @@ const ReportModal = ({ isOpen, onClose, onSubmit }) => {
         <div className="modal-content">
           <header className="modal-header">
             <h2>Report Post</h2>
-            <button className="closebtn" onClick={onClose}>×</button>
+            <button className="closebtn" onClick={onClose}>
+              ×
+            </button>
           </header>
           <form onSubmit={handleSubmit}>
             <textarea
@@ -232,30 +232,38 @@ const HomePage = () => {
               posts.map((post) => (
                 <div key={post.id} className="post">
                   <div className="post-header">
-                    <img
-                      src={post.profilePic ? post.profilePic : defaultProfilePic}
-                      alt={post.author}
-                      className="profile-pic"
-                    />
-                    <div className="post-info">
-                      <h4>{post.author}</h4>
-                      <p>{post.time}</p>
+                    <div className="post-header-2">
+                      <img
+                        src={
+                          post.profilePic ? post.profilePic : defaultProfilePic
+                        }
+                        alt={post.author}
+                        className="profile-pic"
+                      />
+                      <div className="post-info">
+                        <h4>{post.author}</h4>
+                        <p>{post.time}</p>
+                      </div>
                     </div>
-                    <div className="post-options">
-                      <button
-                        onClick={() => togglePostOptions(post.id)}
-                        className="options-btn"
-                      >
-                        <FontAwesomeIcon
-                          icon={faEllipsis}
-                          className="faEllipsis"
-                        />
-                      </button>
-                      {openDropdownId === post.id && (
-                        <div className="options-dropdown">
-                          <button onClick={() => setIsReportModalOpen(true)}>Report</button>
-                        </div>
-                      )}
+                    <div className="post-header-3">
+                      <div className="post-options">
+                        <button
+                          onClick={() => togglePostOptions(post.id)}
+                          className="options-btn"
+                        >
+                          <FontAwesomeIcon
+                            icon={faEllipsis}
+                            className="faEllipsis"
+                          />
+                        </button>
+                        {openDropdownId === post.id && (
+                          <div className="options-dropdown">
+                            <button onClick={() => setIsReportModalOpen(true)}>
+                              Report
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="post-content">
@@ -290,31 +298,37 @@ const HomePage = () => {
 
                     {selectedPost === post.id && (
                       <div className="comments-section">
-                        {post.comments.length === 0 ? (
-                          <p>No Comments Yet</p>
-                        ) : (
-                          post.comments.map((comment, index) => (
-                            <div key={index} className="comment">
-                              <strong>{comment.author}</strong>
-                              <p>{comment.text}</p>
-                              <span>{comment.time}</span>
-                            </div>
-                          ))
-                        )}
-                        <form
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            handleCommentSubmit(post.id);
-                          }}
-                        >
-                          <input
-                            type="text"
-                            placeholder="Add a comment..."
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                          />
-                          <button type="submit">Comment</button>
-                        </form>
+                        <div className="comments">
+                          {post.comments.length === 0 ? (
+                            <p>No Comments Yet</p>
+                          ) : (
+                            post.comments.map((comment, index) => (
+                              <div key={index} className="comment">
+                                <strong>{comment.author}</strong>
+                                <span>
+                                  <small> {comment.time} </small>
+                                </span>
+                                <p>{comment.text}</p>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                        <div className="comment-footer">
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              handleCommentSubmit(post.id);
+                            }}
+                          >
+                            <input
+                              type="text"
+                              placeholder="Add a comment..."
+                              value={newComment}
+                              onChange={(e) => setNewComment(e.target.value)}
+                            />
+                            <button type="submit">Comment</button>
+                          </form>
+                        </div>
                       </div>
                     )}
                   </div>
