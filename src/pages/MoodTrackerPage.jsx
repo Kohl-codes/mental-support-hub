@@ -8,7 +8,9 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { auth, db } from "../configs/firebaseConfig";
-import "../styles/moodTracker.css"; 
+import "../styles/moodTracker.css";
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 
 const moods = [
   { id: 1, label: "😊 Happy", value: "happy", color: "#FFD700" },
@@ -63,37 +65,48 @@ const MoodTrackerPage = () => {
   };
 
   return (
-    <div className="mood-tracker-container">
-      <h1>How are you feeling today?</h1>
+    <div className="page-layout">
+      {/* Navbar at the top */}
+      <Navbar />
 
-      <div className="mood-selection">
-        {moods.map((mood) => (
-          <button
-            key={mood.id}
-            className={`mood-button ${selectedMood === mood ? "selected" : ""}`}
-            style={{ backgroundColor: mood.color }}
-            onClick={() => handleMoodSelect(mood)}
-            disabled={loading}
-          >
-            {mood.label}
-          </button>
-        ))}
+      <div className="content-with-sidebar">
+        {/* Sidebar on the left */}
+        <Sidebar />
+
+        {/* Main content */}
+        <div className="main-content">
+          <h1>How are you feeling today?</h1>
+
+          <div className="mood-selection">
+            {moods.map((mood) => (
+              <button
+                key={mood.id}
+                className={`mood-button ${selectedMood === mood ? "selected" : ""}`}
+                style={{ backgroundColor: mood.color }}
+                onClick={() => handleMoodSelect(mood)}
+                disabled={loading}
+              >
+                {mood.label}
+              </button>
+            ))}
+          </div>
+
+          {loading && <p>Saving your mood...</p>}
+
+          <h2>Mood History</h2>
+          <ul className="mood-history-list">
+            {moodHistory.map((entry) => (
+              <li key={entry.id} className="mood-history-item">
+                <span
+                  className="mood-history-color"
+                  style={{ backgroundColor: entry.color }}
+                />
+                {entry.moodLabel} - {new Date(entry.createdAt?.seconds * 1000).toLocaleDateString()}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-
-      {loading && <p>Saving your mood...</p>}
-
-      <h2>Mood History</h2>
-      <ul className="mood-history-list">
-        {moodHistory.map((entry) => (
-          <li key={entry.id} className="mood-history-item">
-            <span
-              className="mood-history-color"
-              style={{ backgroundColor: entry.color }}
-            />
-            {entry.moodLabel} - {new Date(entry.createdAt?.seconds * 1000).toLocaleDateString()}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };
