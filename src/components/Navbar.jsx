@@ -6,29 +6,25 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import pclogo from "../assets/pclogo.png";
 import mobilelogo from "../assets/mobilelogo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { faComment } from "@fortawesome/free-solid-svg-icons";
-import { faSmile } from "@fortawesome/free-solid-svg-icons";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faPlus, faComment, faSmile, faBell, faBars } from "@fortawesome/free-solid-svg-icons";
 import "../styles/navBar.css";
 
 const NavBar = ({ setSearchResults, setCreatingPost }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [notifications, setNotifications] = useState([]); // State for notifications
-  const [showNotifications, setShowNotifications] = useState(false); // State for toggling notifications dropdown
+  const [notifications, setNotifications] = useState([]); 
+  const [showNotifications, setShowNotifications] = useState(false); 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
   const navigate = useNavigate();
 
   // Fetch notifications
   useEffect(() => {
     const fetchNotifications = async () => {
-      const userId = auth.currentUser?.uid; // Get the current user's ID
+      const userId = auth.currentUser?.uid;
       if (!userId) return;
 
       try {
-        const notificationsRef = collection(db, "notifications"); // Replace with your notifications collection
-        const q = query(notificationsRef, where("userId", "==", userId)); // Query for notifications for this user
+        const notificationsRef = collection(db, "notifications");
+        const q = query(notificationsRef, where("userId", "==", userId));
         const querySnapshot = await getDocs(q);
 
         const fetchedNotifications = querySnapshot.docs.map((doc) => ({
@@ -71,7 +67,7 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       console.error("Error logging out: ", error);
     }
@@ -79,6 +75,10 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
@@ -116,10 +116,10 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
         </button>
 
         {/* Links */}
-        <div className="navbar-links">
+        <div className={`navbar-links ${isMobileMenuOpen ? 'open' : ''}`}>
           <Link to="/chatmenu" className="navbar-link">
             <FontAwesomeIcon icon={faComment} className="faComment" />
-            <div className="nav-words"> Chat</div>
+            <div className="nav-words">Chat</div>
           </Link>
           <Link to="/mood-tracker" className="navbar-link">
             <FontAwesomeIcon icon={faSmile} className="faSmile" />
@@ -127,7 +127,7 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
           </Link>
         </div>
 
-        {/* Notifications Dropdown */}
+        {/* Notifications */}
         <div className="notifications">
           <button
             onClick={toggleNotifications}
@@ -145,15 +145,16 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
                   </div>
                 ))
               ) : (
-                <div>No notifications</div>
+                <div className="no-notifications">No notifications</div>
               )}
             </div>
           )}
         </div>
 
-        {/* <button className="mobile-menu-button" onClick={toggleMobileMenu}>
+        {/* Mobile menu button */}
+        <button className="mobile-menu-button" onClick={toggleMobileMenu}>
           <FontAwesomeIcon icon={faBars} className="faBars" />
-        </button> */}
+        </button>
 
         {/* Logout button */}
         <button className="navbar-logout" onClick={handleLogout}>
