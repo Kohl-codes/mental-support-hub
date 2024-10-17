@@ -4,12 +4,15 @@
   background-position: center;
   background-repeat: no-repeat;
   height: 100vh;
+  display: flex;
 }
 
 .chat-menu-container {
-  margin-left: 24%;
+  margin-left: 15%;
   display: flex;
-  max-width: 600px;
+  justify-content: space-between;
+  max-width: 500px;
+  max-height: 85%;
 }
 
 .chat-container,
@@ -121,11 +124,12 @@
     margin-left: 5%;
     flex-direction: column;
     justify-content: none;
-    max-width: 90%;
+    width: 90%;
   }
 
   .chat-container,
   .forum-container {
+    width: 100%;
     margin-right: 0;
     margin-bottom: 50px;
   }
@@ -149,7 +153,7 @@
   }
 
   .chat-menu-container {
-    margin-left: 5%;
+    margin-left: 10%;
     max-width: 90%;
   }
 
@@ -164,7 +168,7 @@
   }
 
   .protect-checkbox input {
-    margin-right: -110px;
+    margin-right: -100px;
   }
 
   .post-form input {
@@ -193,7 +197,7 @@
   }
 
   .protect-checkbox input {
-    margin-right: -190px;
+    margin-right: -100px;
   }
 
   .post-form input {

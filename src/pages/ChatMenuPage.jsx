@@ -9,9 +9,10 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { db, auth } from "../configs/firebaseConfig";
-import Navbar from "../components/Navbar";  
-import Sidebar from "../components/Sidebar"; 
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 import "../styles/chatmenu.css";
+import "../styles/modal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faComment } from "@fortawesome/free-solid-svg-icons";
 
@@ -20,12 +21,12 @@ const ChatMenuPage = ({ setRoom }) => {
   const [newRoomName, setNewRoomName] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordProtected, setIsPasswordProtected] = useState(false);
-  const [posts, setPosts] = useState([]); 
-  const [newPost, setNewPost] = useState(""); 
+  const [posts, setPosts] = useState([]);
+  const [newPost, setNewPost] = useState("");
   const navigate = useNavigate();
   const chatroomsRef = collection(db, "chatrooms");
-  const postsRef = collection(db, "posts"); 
-  const currentUser = auth.currentUser; 
+  const postsRef = collection(db, "posts");
+  const currentUser = auth.currentUser;
 
   // Fetch existing chatrooms
   useEffect(() => {
@@ -94,77 +95,109 @@ const ChatMenuPage = ({ setRoom }) => {
       createdAt: new Date(),
     });
 
-    setNewPost(""); 
+    setNewPost("");
   };
 
   return (
-    <div className="chat-menu-page">
-      <Navbar />  {/* Add Navbar at the top */}
-      <div className="content-wrapper">
-        <Sidebar /> {/* Add Sidebar on the side */}
-        <div className="chat-menu-content">
-          <h1>Choose a Chatroom</h1>
-          <div className="room-list">
-            {rooms.map((room) => (
-              <div key={room.id} className="room-item">
-                <h3>{room.name}</h3>
-                {room.password && <span>Password Protected</span>}
-                <button onClick={() => handleJoinRoom(room.name)}>Join</button>
-              </div>
-            ))}
-          </div>
+    <div>
+      <Navbar />
+      <div className="bg-chat">
+        <a href="#id01" className="profile-btn">
+          Profile
+        </a>
 
-          <form onSubmit={handleCreateRoom} className="new-room-form">
-            <h2>Create a new Room</h2>
-            <input
-              type="text"
-              placeholder="Room Name"
-              value={newRoomName}
-              onChange={(e) => setNewRoomName(e.target.value)}
-              required
-            />
-            <div>
-              <input
-                type="checkbox"
-                checked={isPasswordProtected}
-                onChange={(e) => setIsPasswordProtected(e.target.checked)}
-              />
-              <label>Password Protected</label>
+        <div id="id01" className="modal">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <header className="container">
+                <a href="#" className="closebtn">
+                  ×
+                </a>
+                <h2>Profile</h2>
+              </header>
+              <div className="container">
+                <Sidebar />
+              </div>
             </div>
-            {isPasswordProtected && (
+          </div>
+        </div>
+        <div className="chat-menu-container">
+          <div className="chat-container">
+            <h1>Chatrooms</h1>
+            <div className="room-list">
+              {rooms.map((room) => (
+                <div key={room.id} className="room-item">
+                  <h3>{room.name}</h3>
+                  {room.password && (
+                    <span>
+                      <FontAwesomeIcon icon={faLock} />
+                    </span>
+                  )}
+                  <button onClick={() => handleJoinRoom(room.name)}>
+                    Join
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="new-room-form">
+              <form onSubmit={handleCreateRoom}>
+                <h3>Create a new Room</h3>
+                <input
+                  type="text"
+                  placeholder="Room Name"
+                  value={newRoomName}
+                  onChange={(e) => setNewRoomName(e.target.value)}
+                  required
+                />
+                <div className="protect-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={isPasswordProtected}
+                    onChange={(e) => setIsPasswordProtected(e.target.checked)}
+                  />
+                  <label>Password Protected</label>
+                </div>
+                {isPasswordProtected && (
+                  <input
+                    type="password"
+                    placeholder="Enter Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                )}
+                <button type="submit">Create Room</button>
+              </form>
+            </div>
+          </div>
+          <div className="forum-container">
+            <h1>Forum</h1>
+            <form onSubmit={handleCreatePost} className="post-form">
               <input
-                type="password"
-                placeholder="Enter Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                type="text"
+                placeholder="Write a post..."
+                value={newPost}
+                onChange={(e) => setNewPost(e.target.value)}
                 required
               />
-            )}
-            <button type="submit">Create Room</button>
-          </form>
-
-          <h2>Forum</h2>
-          <form onSubmit={handleCreatePost} className="post-form">
-            <input
-              type="text"
-              placeholder="Write a post..."
-              value={newPost}
-              onChange={(e) => setNewPost(e.target.value)}
-              required
-            />
-            <button type="submit">Post</button>
-          </form>
-
-          <div className="post-list">
-            {posts.map((post) => (
-              <div key={post.id} className="post-item">
-                <p>{post.content}</p>
-                <small>Posted by {post.createdBy} on {new Date(post.createdAt).toLocaleString()}</small>
-                {post.createdById === currentUser.uid && (
-                  <span className="your-post"> (Your Post)</span>
-                )}   
-              </div>
-            ))}
+              <button type="submit">Post</button>
+            </form>
+            <div className="post-list">
+              {posts.map((post) => (
+                <div key={post.id} className="post-item">
+                  <small>
+                    <FontAwesomeIcon icon={faComment} /> {post.content}
+                  </small>
+                  <p>
+                    Posted by {post.createdBy} on{" "}
+                    {new Date(post.createdAt).toLocaleString()}
+                  </p>
+                  {post.createdById === currentUser.uid && ( // Check if the post was created by the current user
+                    <p className="your-post"> (Your Post)</p>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

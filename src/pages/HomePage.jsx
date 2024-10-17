@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../configs/firebaseConfig";
 import "../styles/home.css";
+import "../styles/modal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 
