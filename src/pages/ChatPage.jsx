@@ -19,6 +19,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/chat.css";
 import Modal from "react-modal"; // Add Modal component for inviting users
+import Navbar from "../components/Navbar.jsx";
 
 // Sound alert for new messages
 const notificationSound = new Audio("../assets/notif.mp3");
@@ -185,9 +186,11 @@ const Chat = (props) => {
   };
 
   const playNotificationSound = () => {
-    notificationSound.play().catch((error) =>
-      console.error("Error playing notification sound:", error)
-    );
+    notificationSound
+      .play()
+      .catch((error) =>
+        console.error("Error playing notification sound:", error)
+      );
   };
 
   // Modal management for inviting users
@@ -204,11 +207,12 @@ const Chat = (props) => {
 
   return (
     <div className="chat-bg">
+      <Navbar />
       <div className="chat-container">
-        <button className="go-back-button" onClick={goBack}>
-          <FaArrowLeft />
-        </button>
         <div className="header">
+          <button className="go-back-button" onClick={goBack}>
+            <FaArrowLeft />
+          </button>
           <h1>{room}</h1>
           <button className="invite-button" onClick={openModal}>
             Invite Users

@@ -1,41 +1,202 @@
+.bg-chat {
+  background-image: url("../assets/mshbg2.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+}
+
 .chat-menu-container {
-    padding: 20px;
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #f9f9f9;
-    border-radius: 8px;
+  margin-left: 24%;
+  display: flex;
+  max-width: 600px;
+}
+
+.chat-container,
+.forum-container {
+  background-color: var(--accent);
+  margin-right: 50px;
+  padding: 20px;
+  border-radius: 8px;
+  color: var(--text);
+}
+
+.chat-container h1,
+.forum-container h1 {
+  margin-bottom: 20px;
+}
+
+.room-list,
+.post-list {
+  margin-bottom: 30px;
+  overflow-y: scroll;
+  max-height: 200px;
+  padding-right: 5px;
+}
+
+.post-list {
+  max-height: 250px;
+}
+
+.room-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.room-item span {
+  color: var(--error);
+}
+
+.new-room-form {
+  border-top: solid 1px var(--primary);
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  margin-bottom: 30px;
+  overflow-y: scroll;
+  max-height: 180px;
+  padding-right: 5px;
+}
+
+.new-room-form h2 {
+  color: var(--text);
+}
+
+.protect-checkbox {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.protect-checkbox input {
+  margin-right: -130px;
+  margin-left: -40%;
+}
+
+.post-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.new-room-form button,
+.forum-container button,
+.room-item button {
+  padding: 10px;
+  background-color: var(--secondary);
+  color: var(--text);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.new-room-form button:hover,
+.forum-container button:hover,
+.room-item button:hover {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.forum-container button {
+  margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 700px) {
+  .bg-chat {
+    background-image: none;
+    background-color: var(--background);
+    height: auto;
   }
-  
-  .room-list {
-    margin-bottom: 20px;
-  }
-  
-  .room-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #e0e0e0;
-    border-radius: 4px;
-  }
-  
-  .new-room-form {
-    display: flex;
+
+  .chat-menu-container {
+    margin-left: 5%;
     flex-direction: column;
+    justify-content: none;
+    max-width: 90%;
   }
-  
+
+  .chat-container,
+  .forum-container {
+    margin-right: 0;
+    margin-bottom: 50px;
+  }
+
   .new-room-form input {
-    margin-bottom: 10px;
-    padding: 8px;
+    width: 100%;
   }
-  
-  .new-room-form button {
-    padding: 10px;
-    background-color: #6200ee;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+
+  .protect-checkbox input {
+    margin-right: -110px;
   }
-  
+
+  .post-form input {
+    width: 100%;
+  }
+}
+
+@media only screen and (min-width: 701px) and (max-width: 800px) {
+  .bg-chat {
+    height: 100vh;
+  }
+
+  .chat-menu-container {
+    margin-left: 5%;
+    max-width: 90%;
+  }
+
+  .chat-container,
+  .forum-container {
+    margin-right: 10px;
+    max-width: 50%;
+  }
+
+  .new-room-form input {
+    width: 100%;
+  }
+
+  .protect-checkbox input {
+    margin-right: -110px;
+  }
+
+  .post-form input {
+    width: 100%;
+  }
+}
+
+@media only screen and (min-width: 801px) and (max-width: 1030px) {
+  .bg-chat {
+    height: auto;
+  }
+
+  .chat-menu-container {
+    margin-left: 10%;
+    max-width: 100%;
+  }
+
+  .chat-container,
+  .forum-container {
+    margin-right: 10px;
+    max-width: 50%;
+  }
+
+  .new-room-form input {
+    width: 100%;
+  }
+
+  .protect-checkbox input {
+    margin-right: -190px;
+  }
+
+  .post-form input {
+    width: 100%;
+  }
+}
