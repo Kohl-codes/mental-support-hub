@@ -29,13 +29,13 @@ const Chat = (props) => {
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false); // For inviting users
-  const [inviteEmail, setInviteEmail] = useState(""); // For invite input
-  const [password, setPassword] = useState(""); // Password for the chatroom
-  const [isPasswordProtected, setIsPasswordProtected] = useState(false); // Password-protection toggle
+  const [isModalOpen, setIsModalOpen] = useState(false);  
+  const [inviteEmail, setInviteEmail] = useState(""); 
+  const [password, setPassword] = useState(""); 
+  const [isPasswordProtected, setIsPasswordProtected] = useState(false); 
   const messagesEndRef = useRef(null);
   const messagesRef = collection(db, "messages");
-  const chatroomsRef = collection(db, "chatrooms"); // Chatrooms collection
+  const chatroomsRef = collection(db, "chatrooms"); 
   const navigate = useNavigate();
 
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"; 
 import { useNavigate } from "react-router-dom";
 import { auth, provider, db } from "../configs/firebaseConfig";
 import {
@@ -82,6 +82,15 @@ const AuthPage = (props) => {
       return;
     }
 
+    // Admin login check
+    if (email === "admin@gmail.com" && password === "admin1234") {
+      // Set authentication token or any required data for the admin
+      cookies.set("auth-token", "admin-token");
+      setIsAuth(true);
+      navigate("/admin"); // Redirect to admin page
+      return;
+    }
+
     if (isRegistering) {
       if (password !== confirmPassword) {
         setError("Passwords do not match.");
@@ -107,7 +116,7 @@ const AuthPage = (props) => {
 
           cookies.set("auth-token", user.refreshToken);
           setIsAuth(true);
-          navigate("/");
+          navigate("/"); // Regular user home page
         }
       } catch (error) {
         console.error("Error during authentication:", error.message);
@@ -132,7 +141,7 @@ const AuthPage = (props) => {
 
         cookies.set("auth-token", user.refreshToken);
         setIsAuth(true);
-        navigate("/");
+        navigate("/"); // Regular user home page
       } catch (error) {
         console.error("Error during authentication:", error.message);
         setError(getErrorMessage(error.code));
@@ -175,7 +184,7 @@ const AuthPage = (props) => {
       );
 
       setIsAuth(true);
-      navigate("/");
+      navigate("/"); // Regular user home page
     } catch (error) {
       console.error("Error signing in with Google:", error.message);
       setError(getErrorMessage(error.code));

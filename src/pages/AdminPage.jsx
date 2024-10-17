@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from "../configs/firebaseConfig";
-
+import "../styles/admin.css";
 
 const AdminPage = () => {
   const [users, setUsers] = useState([]);
@@ -87,11 +87,17 @@ const AdminPage = () => {
   return (
     <div className="admin-page">
       <h1>Admin Dashboard</h1>
-      
+
       {/* Basic Stats */}
       <div className="stats">
-        <p>Total Users: {totalUsers}</p>
-        <p>Total Forums: {totalForums}</p>
+        <div className="stat-card">
+          <p>Total Users</p>
+          <h3>{totalUsers}</h3>
+        </div>
+        <div className="stat-card">
+          <p>Total Forums</p>
+          <h3>{totalForums}</h3>
+        </div>
       </div>
 
       {/* User Management */}
@@ -104,10 +110,12 @@ const AdminPage = () => {
                 <strong>{user.username}</strong> ({user.email}) -{' '}
                 {user.role === 'admin' ? 'Admin' : 'User'}
               </p>
-              <button onClick={() => handleDeleteUser(user.id)}>Delete User</button>
-              {user.role !== 'admin' && (
-                <button onClick={() => handlePromoteUser(user.id)}>Promote to Admin</button>
-              )}
+              <div className="user-actions">
+                <button onClick={() => handleDeleteUser(user.id)}>Delete User</button>
+                {user.role !== 'admin' && (
+                  <button onClick={() => handlePromoteUser(user.id)}>Promote to Admin</button>
+                )}
+              </div>
             </div>
           ))
         ) : (

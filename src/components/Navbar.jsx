@@ -13,7 +13,7 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [notifications, setNotifications] = useState([]); 
   const [showNotifications, setShowNotifications] = useState(false); 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); 
   const navigate = useNavigate();
 
   // Fetch notifications
@@ -63,11 +63,11 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
     }
   };
 
-  // Handle logout
+  // Handle logout and navigate to the login page
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      navigate("/");
+      await signOut(auth);  // Sign out from Firebase auth
+      navigate("/"); // Navigate to the login page (AuthPage)
     } catch (error) {
       console.error("Error logging out: ", error);
     }

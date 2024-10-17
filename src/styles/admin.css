@@ -1,0 +1,67 @@
+.admin-page {
+    padding: 20px;
+    background-color: #f9f9f9;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+  }
+  
+  .stat-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 200px;
+  }
+  
+  .stat-card p {
+    margin: 0;
+    font-size: 16px;
+    color: #555;
+  }
+  
+  .stat-card h3 {
+    font-size: 28px;
+    margin: 10px 0;
+    color: #007bff;
+  }
+  
+  .user-management, .forum-management {
+    margin: 20px 0;
+  }
+  
+  h2 {
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .user-card, .forum-card {
+    background-color: #ffffff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-card p, .forum-card p {
+    margin: 0 0 10px;
+    color: #555;
+  }
+  
+  .user-actions {
+    display: flex;
+    gap: 10px;
+  }
+ 
