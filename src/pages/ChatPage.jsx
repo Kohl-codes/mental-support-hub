@@ -18,7 +18,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/chat.css";
-import Modal from "react-modal"; // Add Modal component for inviting users
+import Modal from "react-modal"; 
 import Navbar from "../components/Navbar.jsx";
 
 // Sound alert for new messages
@@ -38,7 +38,7 @@ const Chat = (props) => {
   const chatroomsRef = collection(db, "chatrooms"); // Chatrooms collection
   const navigate = useNavigate();
 
-  // Fetching messages from Firestore
+
   useEffect(() => {
     const queryMessages = query(
       messagesRef,
@@ -51,7 +51,7 @@ const Chat = (props) => {
         newMessages.push({ ...doc.data(), id: doc.id });
       });
 
-      // Trigger notification for new messages
+      // Trigger toast notification for new messages from others
       if (newMessages.length > messages.length) {
         const lastMessage = newMessages[newMessages.length - 1];
         if (lastMessage.user !== auth.currentUser.displayName) {
@@ -63,7 +63,7 @@ const Chat = (props) => {
       setMessages(newMessages);
     });
     return () => unsubscribe();
-  }, [room, messages]);
+  }, [room]); // Remove messages from dependency array
 
   useEffect(() => {
     if (messagesEndRef.current) {
