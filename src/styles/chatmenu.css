@@ -8,11 +8,10 @@
 }
 
 .chat-menu-container {
-  margin-left: 15%;
+  margin-left: 10%;
   display: flex;
   justify-content: space-between;
   max-width: 500px;
-  max-height: 85%;
 }
 
 .chat-container,
@@ -149,18 +148,23 @@
 
 @media only screen and (min-width: 701px) and (max-width: 800px) {
   .bg-chat {
-    height: 100vh;
+    background-image: none;
+    background-color: var(--background);
+    height: auto;
   }
 
   .chat-menu-container {
-    margin-left: 10%;
-    max-width: 90%;
+    flex-direction: column;
+    justify-content: none;
+    width: 90%;
   }
 
   .chat-container,
   .forum-container {
-    margin-right: 10px;
-    max-width: 50%;
+    width: 100%;
+    margin-left: 10%;
+    margin-right: 0;
+    margin-bottom: 50px;
   }
 
   .new-room-form input {
@@ -168,7 +172,7 @@
   }
 
   .protect-checkbox input {
-    margin-right: -100px;
+    margin-right: -190px;
   }
 
   .post-form input {
@@ -178,29 +182,31 @@
 
 @media only screen and (min-width: 801px) and (max-width: 1030px) {
   .bg-chat {
-    height: auto;
+    height: 100vh;
+  }
+  .chat-menu-container {
+    margin-left: 0;
+    display: flex;
+    justify-content: space-between;
+    max-width: 500px;
   }
 
-  .chat-menu-container {
-    margin-left: 10%;
-    max-width: 100%;
+  .chat-container {
+    margin-left: 5%;
+    width: 80%;
   }
 
   .chat-container,
   .forum-container {
-    margin-right: 10px;
-    max-width: 50%;
+    background-color: var(--accent);
+    margin-right: 30px;
+    padding: 20px;
+    border-radius: 8px;
+    color: var(--text);
   }
 
-  .new-room-form input {
-    width: 100%;
-  }
-
-  .protect-checkbox input {
-    margin-right: -100px;
-  }
-
-  .post-form input {
-    width: 100%;
+  .chat-container h1,
+  .forum-container h1 {
+    margin-bottom: 20px;
   }
 }

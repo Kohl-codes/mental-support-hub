@@ -3,21 +3,53 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: 100vh;
+  height: auto;
 }
 
-.chat-container {
+.chat-container-1 {
+  width: 70%;
+  height: 100vh;
+  margin-left: 15%;
+  flex: 1;
   display: flex;
+  flex-direction: column;
+  background-color: var(--accent);
 }
 
 .header {
   justify-content: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.chat-app {
-  display: flex;
-  height: 100vh;
-  background-color: #f0f2f5;
+.header h1 {
+  margin-left: 6%;
+  color: var(--text);
+}
+
+.go-back-button,
+.invite-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 1.2em;
+}
+
+.invite-button {
+  border: 1px solid var(--primary);
+  background-color: var(--secondary);
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.invite-button:hover,
+.modal-send:hover {
+  background-color: var(--primary);
+  color: #fff;
 }
 
 .sidebar {
@@ -50,41 +82,15 @@
   background: #e0e0e0;
 }
 
-.chat-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.room-title {
-  font-size: 1.5em;
-  color: #333;
-}
-
-.go-back-button,
-.invite-button {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--text);
-  font-size: 1.2em;
-}
-
 .messages {
   padding: 10px;
   overflow-y: auto;
   flex: 1;
-  max-height: 400px; /* Limit height for scrolling */
+  max-height: 450px; /* Limit height for scrolling */
   display: flex;
   flex-direction: column;
+  background-color: #fff;
+  overflow-y: scroll;
 }
 
 .message {
@@ -93,6 +99,7 @@
   margin: 5px 0;
   max-width: 70%;
   word-wrap: break-word;
+  color: var(--text);
 }
 
 .own-message {
@@ -127,7 +134,7 @@
 }
 
 .send-button {
-  background-color: #007bff;
+  background-color: var(--primary);
   color: white;
   border: none;
   border-radius: 5px;
@@ -137,17 +144,28 @@
 }
 
 .send-button:hover {
-  background-color: #0056b3;
+  background-color: #fff;
+  color: var(--text);
 }
 
 /* Modal styles */
 .invite-modal {
   padding: 20px;
-  max-width: 400px;
+  width: 30%;
   margin: auto;
-  background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  color: var(--text);
+  background-color: var(--accent);
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
 }
 
 .invite-modal h2 {
@@ -162,6 +180,153 @@
   border-radius: 5px;
 }
 
-.invite-modal button {
+.modal-close {
+  background-color: transparent;
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modal-send {
   padding: 10px 15px;
+  border: 1px solid var(--primary);
+  background-color: var(--secondary);
+  border-radius: 20px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 700px) {
+  .chat-container-1 {
+    width: 100%;
+    margin-left: 1%;
+  }
+
+  .header {
+    padding: 2px;
+  }
+
+  .header h1 {
+    margin-left: 10%;
+    color: var(--text);
+    font-size: 20px;
+  }
+
+  .go-back-button,
+  .invite-button {
+    font-size: 0.9em;
+  }
+
+  .invite-button {
+    border: none;
+    background-color: var(--accent);
+  }
+
+  .messages {
+    padding: 5px;
+    max-height: 450px; /* Limit height for scrolling */
+  }
+
+  .new-message-form {
+    padding: 5px;
+  }
+
+  .send-button {
+    font-size: 1em;
+  }
+
+  /* Modal styles */
+  .invite-modal {
+    width: 80%;
+  }
+}
+
+@media only screen and (min-width: 701px) and (max-width: 800px) {
+  .chat-container-1 {
+    width: 90%;
+    margin-left: 5%;
+  }
+
+  .header {
+    padding: 2px;
+  }
+
+  .header h1 {
+    margin-left: 10%;
+    color: var(--text);
+    font-size: 20px;
+  }
+
+  .go-back-button,
+  .invite-button {
+    font-size: 0.9em;
+  }
+
+  .invite-button {
+    border: none;
+    background-color: var(--accent);
+  }
+
+  .messages {
+    padding: 5px;
+    max-height: 450px; /* Limit height for scrolling */
+  }
+
+  .new-message-form {
+    padding: 5px;
+  }
+
+  .send-button {
+    font-size: 1em;
+  }
+
+  /* Modal styles */
+  .invite-modal {
+    width: 60%;
+  }
+}
+
+@media only screen and (min-width: 801px) and (max-width: 1030px) {
+  .chat-container-1 {
+    width: 90%;
+    margin-left: 5%;
+  }
+
+  .header {
+    padding: 2px;
+  }
+
+  .header h1 {
+    margin-left: 10%;
+    color: var(--text);
+    font-size: 20px;
+  }
+
+  .go-back-button,
+  .invite-button {
+    font-size: 0.9em;
+  }
+
+  .invite-button {
+    border: none;
+    background-color: var(--accent);
+  }
+
+  .messages {
+    padding: 5px;
+    max-height: 450px; /* Limit height for scrolling */
+  }
+
+  .new-message-form {
+    padding: 5px;
+  }
+
+  .send-button {
+    font-size: 1em;
+  }
+
+  /* Modal styles */
+  .invite-modal {
+    width: 50%;
+  }
 }

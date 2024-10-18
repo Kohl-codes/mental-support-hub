@@ -50,7 +50,7 @@ header {
     left: 0;
     top: 0;
     width: 100%;
-    height: 100%;
+    height: 200px;
     overflow: auto;
     z-index: 1000;
   }
@@ -99,6 +99,6 @@ header {
   }
 
   .container {
-    padding: 4px;
+    padding: 4px 4px 0;
   }
 }

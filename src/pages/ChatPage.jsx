@@ -16,10 +16,13 @@ import { auth, db } from "../configs/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/chat.css";
-import Modal from "react-modal"; 
-import Navbar from "../components/Navbar.jsx";
+import Modal from "react-modal";
 
 // Sound alert for new messages
 const notificationSound = new Audio("../assets/notif.mp3");
@@ -29,15 +32,14 @@ const Chat = (props) => {
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);  
-  const [inviteEmail, setInviteEmail] = useState(""); 
-  const [password, setPassword] = useState(""); 
-  const [isPasswordProtected, setIsPasswordProtected] = useState(false); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isPasswordProtected, setIsPasswordProtected] = useState(false);
   const messagesEndRef = useRef(null);
   const messagesRef = collection(db, "messages");
-  const chatroomsRef = collection(db, "chatrooms"); 
+  const chatroomsRef = collection(db, "chatrooms");
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const queryMessages = query(
@@ -207,15 +209,15 @@ const Chat = (props) => {
 
   return (
     <div className="chat-bg">
-      <Navbar />
-      <div className="chat-container">
+      {/* removed navbar to get a better look of the chat for the users */}
+      <div className="chat-container-1">
         <div className="header">
           <button className="go-back-button" onClick={goBack}>
             <FaArrowLeft />
           </button>
           <h1>{room}</h1>
           <button className="invite-button" onClick={openModal}>
-            Invite Users
+            Invite
           </button>
         </div>
         <div className="messages">
@@ -233,8 +235,11 @@ const Chat = (props) => {
                   className="user"
                   onClick={() => handleUserClick(message.user)}
                 >
-                  {message.user}:{" "}
-                  <span className="hover-text">View profile</span>
+                  {message.user}{" "}
+                  <span className="hover-text">
+                    <FontAwesomeIcon icon={faEye} />
+                  </span>
+                  :{" "}
                 </span>
               )}
               {message.text}
@@ -257,7 +262,7 @@ const Chat = (props) => {
             onBlur={handleBlur}
           />
           <button type="submit" className="send-button">
-            Send
+            <FontAwesomeIcon icon={faPaperPlane} />
           </button>
         </form>
         <ToastContainer />
@@ -269,7 +274,12 @@ const Chat = (props) => {
           contentLabel="Invite Users Modal"
           className="invite-modal"
         >
-          <h2>Invite a User</h2>
+          <div className="modal-header">
+            <h2>Invite a User</h2>
+            <button onClick={closeModal} className="modal-close">
+              <FontAwesomeIcon icon={faClose} />
+            </button>
+          </div>
           <form onSubmit={handleInviteUser}>
             <input
               type="email"
@@ -278,9 +288,10 @@ const Chat = (props) => {
               onChange={(e) => setInviteEmail(e.target.value)}
               required
             />
-            <button type="submit">Send Invite</button>
+            <button type="submit" className="modal-send">
+              Send Invite
+            </button>
           </form>
-          <button onClick={closeModal}>Close</button>
         </Modal>
       </div>
     </div>
