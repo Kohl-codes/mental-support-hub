@@ -10,14 +10,19 @@ import ChatMenuPage from "./pages/ChatMenuPage";
 import ForumPage from "./pages/ForumPage";
 import MoodTrackerPage from "./pages/MoodTrackerPage";
 import AdminPage from "./pages/AdminPage";
+import Cookies from "universal-cookie";  // Correct import
 import "./App.css";
 
+// Initialize cookies instance
+const cookies = new Cookies();
+
 function App() {
-  const [isAuth, setIsAuth] = useState(false);
+  const [isAuth, setIsAuth] = useState(cookies.get("auth-token"));
   const [room, setRoom] = useState(localStorage.getItem("currentRoom") || null);
 
   const signUserOut = async () => {
-    await signOut(auth);  // Firebase sign out
+    await signOut(auth);  
+    cookies.remove("auth-token");  // Correct cookies usage
     setIsAuth(false);
     setRoom(null);
     localStorage.removeItem("currentRoom");
@@ -44,7 +49,7 @@ function App() {
 
 function LogoutButton({ signUserOut }) {
   const location = useLocation();
-  const showLogoutButton = ["/", "/forum", "/mood-tracker", "/admin"].includes(location.pathname);
+  const showLogoutButton = ["/"].includes(location.pathname);
 
   return showLogoutButton ? (
     <div className="sign-out">
