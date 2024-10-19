@@ -64,7 +64,7 @@ input {
 }
 
 .navbar-link {
-  margin: 20px;
+  margin-left: 60px;
   display: flex;
   align-items: center;
   background-color: var(--background);
