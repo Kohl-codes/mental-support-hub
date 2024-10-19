@@ -16,7 +16,6 @@
 
 .chat-container,
 .forum-container {
-  background-color: var(--accent);
   margin-right: 50px;
   padding: 20px;
   border-radius: 8px;

@@ -6,14 +6,21 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import pclogo from "../assets/pclogo.png";
 import mobilelogo from "../assets/mobilelogo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faPlus, faComment, faSmile, faBell, faBars } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSearch,
+  faPlus,
+  faComment,
+  faSmile,
+  faBell,
+  faBars,
+} from "@fortawesome/free-solid-svg-icons";
 import "../styles/navBar.css";
 
 const NavBar = ({ setSearchResults, setCreatingPost }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [notifications, setNotifications] = useState([]); 
-  const [showNotifications, setShowNotifications] = useState(false); 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); 
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   // Fetch notifications
@@ -66,7 +73,7 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
   // Handle logout and navigate to the login page
   const handleLogout = async () => {
     try {
-      await signOut(auth);  // Sign out from Firebase auth
+      await signOut(auth); // Sign out from Firebase auth
       navigate("/"); // Navigate to the login page (AuthPage)
     } catch (error) {
       console.error("Error logging out: ", error);
@@ -107,16 +114,16 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
         </form>
 
         {/* New post button */}
-        <button
+        {/* <button
           className="navbar-newpost"
           onClick={() => setCreatingPost(true)}
         >
           <FontAwesomeIcon icon={faPlus} className="faPlus" />
           <div className="nav-words">New</div>
-        </button>
+        </button> */}
 
         {/* Links */}
-        <div className={`navbar-links ${isMobileMenuOpen ? 'open' : ''}`}>
+        <div className={`navbar-links ${isMobileMenuOpen ? "open" : ""}`}>
           <Link to="/chatmenu" className="navbar-link">
             <FontAwesomeIcon icon={faComment} className="faComment" />
             <div className="nav-words">Chat</div>

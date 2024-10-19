@@ -1,75 +1,301 @@
-/* moodTracker.css */
+.page-layout {
+  background-image: url("../assets/mshbg2.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 120vh;
+}
 
+.content-with-sidebar {
+  display: flex;
+}
 
-  
-  .mood-tracker-container {
-    max-width: 600px; /* Center and constrain width */
-    margin: 0 auto; /* Center the container */
-    padding: 20px;
-    background-color: white; /* White background for the container */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+.main-content-1 {
+  margin-left: 5%;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.main-content-1 h1 {
+  color: var(--text);
+}
+
+.mood-tracker-container {
+  max-width: 600px; /* Center and constrain width */
+  margin: 0 auto; /* Center the container */
+  padding: 20px;
+  background-color: white; /* White background for the container */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+.mood-selection {
+  display: flex;
+  justify-content: space-between; /* Space out buttons evenly */
+  margin: 20px 0; /* Add margin for spacing */
+}
+
+.mood-label {
+  margin-top: 10px;
+}
+
+.img-fluid {
+  width: 50px;
+  height: 50px;
+}
+
+.mood-button {
+  flex: 1; /* Allow buttons to stretch equally */
+  width: 130px;
+  height: 130px;
+  margin: 0 10px; /* Margin between buttons */
+  padding: 15px; /* Padding for button */
+  border: none; /* Remove default border */
+  border-radius: 8px; /* Rounded corners for buttons */
+  color: white; /* Text color */
+  font-size: 1.2em; /* Larger font for readability */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: transform 0.2s; /* Smooth scaling effect on hover */
+}
+
+.mood-button:hover {
+  transform: scale(1.05); /* Slightly scale up on hover */
+}
+
+.mood-button.selected {
+  border: 2px solid white; /* Highlight selected button */
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Subtle glow effect */
+}
+
+.loading-message {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1.2em; /* Increase font size */
+  color: #ff9800; /* Orange color for loading message */
+}
+
+.mood-history {
+  width: 80%;
+}
+
+.mood-history h2 {
+  margin-top: 40px; /* Space above the mood history section */
+  color: var(--text); /* Darker gray for subtitles */
+}
+
+.mood-history-list {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0; /* Remove padding */
+  overflow-y: scroll;
+  height: 300px;
+  color: rgb(85, 85, 85);
+}
+
+.mood-history-item {
+  display: flex; /* Use flexbox for alignment */
+  flex-direction: row;
+  align-items: center; /* Center items vertically */
+  margin: 10px 0; /* Space between items */
+  padding: 10px; /* Padding around each item */
+  border-radius: 8px; /* Rounded corners */
+  width: 95%;
+  background-color: var(--secondary); /* Light background for history items */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+@media only screen and (max-width: 700px) {
+  .page-layout {
+    height: auto;
   }
 
-  
+  .main-content-1 {
+    width: 100%;
+    margin-left: 0%;
+    color: var(--text);
+  }
+
+  .main-content-1 h1 {
+    color: var(--text);
+  }
+
+  .mood-tracker-container {
+    max-width: 300px; /* Center and constrain width */
+    margin: 0 auto; /* Center the container */
+  }
+
   .mood-selection {
     display: flex;
     justify-content: space-between; /* Space out buttons evenly */
     margin: 20px 0; /* Add margin for spacing */
+    flex-wrap: wrap;
   }
-  
+
+  .mood-label {
+    margin-top: 5px;
+  }
+
+  .img-fluid {
+    width: 20px;
+    height: 20px;
+  }
+
   .mood-button {
-    flex: 1; /* Allow buttons to stretch equally */
-    margin: 0 10px; /* Margin between buttons */
-    padding: 15px; /* Padding for button */
-    border: none; /* Remove default border */
-    border-radius: 8px; /* Rounded corners for buttons */
-    color: white; /* Text color */
-    font-size: 1.2em; /* Larger font for readability */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: transform 0.2s; /* Smooth scaling effect on hover */
+    width: 50px;
+    height: 50px;
+    margin: 0 5px; /* Margin between buttons */
+    padding: 10px; /* Padding for button */
+    font-size: 0.5em; /* Larger font for readability */
   }
-  
-  .mood-button:hover {
-    transform: scale(1.05); /* Slightly scale up on hover */
+
+  .mood-history {
+    margin: 0 5px 5px 5px;
+    width: 95%;
   }
-  
-  .mood-button.selected {
-    border: 2px solid white; /* Highlight selected button */
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Subtle glow effect */
+
+  .mood-history h2 {
+    margin-top: 30px; /* Space above the mood history section */
+    color: var(--text); /* Darker gray for subtitles */
   }
-  
-  .loading-message {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 1.2em; /* Increase font size */
-    color: #ff9800; /* Orange color for loading message */
-  }
-  
-  h2 {
-    margin-top: 40px; /* Space above the mood history section */
-    color: #555; /* Darker gray for subtitles */
-  }
-  
+
   .mood-history-list {
-    list-style-type: none; /* Remove bullet points */
-    padding: 0; /* Remove padding */
+    height: 300px;
+    color: rgb(85, 85, 85);
   }
-  
+
   .mood-history-item {
-    display: flex; /* Use flexbox for alignment */
-    align-items: center; /* Center items vertically */
     margin: 10px 0; /* Space between items */
     padding: 10px; /* Padding around each item */
-    border-radius: 8px; /* Rounded corners */
-    background-color: #f9f9f9; /* Light background for history items */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   }
-  
-  .mood-history-color {
-    width: 20px; /* Fixed width for color indicator */
-    height: 20px; /* Fixed height for color indicator */
-    border-radius: 50%; /* Circular color indicator */
-    margin-right: 10px; /* Space between color indicator and text */
+}
+
+@media only screen and (min-width: 701px) and (max-width: 800px) {
+  .page-layout {
+    height: auto;
   }
-  
+
+  .main-content-1 {
+    width: 100%;
+    margin-left: 0%;
+    color: var(--text);
+  }
+
+  .main-content-1 h1 {
+    color: var(--text);
+  }
+
+  .mood-tracker-container {
+    max-width: 300px; /* Center and constrain width */
+    margin: 0 auto; /* Center the container */
+  }
+
+  .mood-selection {
+    display: flex;
+    justify-content: space-between; /* Space out buttons evenly */
+    margin: 20px 0; /* Add margin for spacing */
+    flex-wrap: wrap;
+  }
+
+  .mood-label {
+    margin-top: 5px;
+  }
+
+  .img-fluid {
+    width: 40px;
+    height: 40px;
+  }
+
+  .mood-button {
+    width: 80px;
+    height: 80px;
+    margin: 0 5px; /* Margin between buttons */
+    padding: 10px; /* Padding for button */
+    font-size: 1em; /* Larger font for readability */
+  }
+
+  .mood-history {
+    margin: 0 5px 5px 5px;
+    width: 95%;
+  }
+
+  .mood-history h2 {
+    margin-top: 30px; /* Space above the mood history section */
+    color: var(--text); /* Darker gray for subtitles */
+  }
+
+  .mood-history-list {
+    height: 300px;
+    color: rgb(85, 85, 85);
+  }
+
+  .mood-history-item {
+    margin: 10px 0; /* Space between items */
+    padding: 10px; /* Padding around each item */
+  }
+}
+
+@media only screen and (min-width: 801px) and (max-width: 1030px) {
+  .page-layout {
+    height: auto;
+  }
+
+  .main-content-1 {
+    width: 100%;
+    margin-left: 0%;
+    color: var(--text);
+  }
+
+  .main-content-1 h1 {
+    color: var(--text);
+  }
+
+  .mood-tracker-container {
+    max-width: 300px; /* Center and constrain width */
+    margin: 0 auto; /* Center the container */
+  }
+
+  .mood-selection {
+    display: flex;
+    justify-content: space-between; /* Space out buttons evenly */
+    margin: 20px 0; /* Add margin for spacing */
+    flex-wrap: wrap;
+  }
+
+  .mood-label {
+    margin-top: 5px;
+  }
+
+  .img-fluid {
+    width: 40px;
+    height: 40px;
+  }
+
+  .mood-button {
+    width: 80px;
+    height: 80px;
+    margin: 0 5px; /* Margin between buttons */
+    padding: 10px; /* Padding for button */
+    font-size: 1em; /* Larger font for readability */
+  }
+
+  .mood-history {
+    margin: 0 5px 5px 5px;
+    width: 95%;
+  }
+
+  .mood-history h2 {
+    margin-top: 30px; /* Space above the mood history section */
+    color: var(--text); /* Darker gray for subtitles */
+  }
+
+  .mood-history-list {
+    height: 300px;
+    color: rgb(85, 85, 85);
+  }
+
+  .mood-history-item {
+    margin: 10px 0; /* Space between items */
+    padding: 10px; /* Padding around each item */
+  }
+}
