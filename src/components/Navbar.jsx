@@ -2,32 +2,61 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "../configs/firebaseConfig";
 import { signOut } from "firebase/auth";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
 import pclogo from "../assets/pclogo.png";
 import mobilelogo from "../assets/mobilelogo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faPlus,
-  faComment,
-  faSmile,
-  faBell,
-  faBars,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faComment, faSmile, faBell, faBars } from "@fortawesome/free-solid-svg-icons";
 import "../styles/navBar.css";
 
-const NavBar = ({ setSearchResults, setCreatingPost }) => {
+const NavBar = ({ setSearchResults }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true); // Added loading state
   const navigate = useNavigate();
 
-  // Fetch notifications
+  // Check if the current user is an admin
+  useEffect(() => {
+    const checkUserRole = async () => {
+      const userId = auth.currentUser?.uid;
+      if (!userId) {
+        setLoading(false); // No user logged in, stop loading
+        return;
+      }
+
+      try {
+        const userRef = doc(db, "users", userId);
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setIsAdmin(userData.role === "admin");
+        }
+      } catch (error) {
+        console.error("Error checking user role: ", error);
+      } finally {
+        setLoading(false); // Finished loading
+      }
+    };
+
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        checkUserRole();
+      } else {
+        setLoading(false); // No user, stop loading
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Fetch notifications for regular users
   useEffect(() => {
     const fetchNotifications = async () => {
       const userId = auth.currentUser?.uid;
-      if (!userId) return;
+      if (!userId || isAdmin) return;
 
       try {
         const notificationsRef = collection(db, "notifications");
@@ -46,9 +75,8 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
     };
 
     fetchNotifications();
-  }, []);
+  }, [isAdmin]);
 
-  // Handle search functionality
   const handleSearch = async (e) => {
     e.preventDefault();
     if (searchQuery.trim() === "") return;
@@ -70,11 +98,10 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
     }
   };
 
-  // Handle logout and navigate to the login page
   const handleLogout = async () => {
     try {
-      await signOut(auth); // Sign out from Firebase auth
-      navigate("/"); // Navigate to the login page (AuthPage)
+      await signOut(auth);
+      navigate("/"); // Redirect to login page after logout
     } catch (error) {
       console.error("Error logging out: ", error);
     }
@@ -88,6 +115,10 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  if (loading) {
+    return <div>Loading...</div>; // Loading indicator while checking user role
+  }
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -99,74 +130,93 @@ const NavBar = ({ setSearchResults, setCreatingPost }) => {
           </Link>
         </div>
 
-        {/* Search bar */}
-        <form className="navbar-search" onSubmit={handleSearch}>
-          <input
-            type="text"
-            placeholder="Search forums..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-          <button type="submit" className="search-button">
-            <FontAwesomeIcon icon={faSearch} className="faSearch" />
+        {auth.currentUser ? (
+          <>
+            {isAdmin ? (
+              /* Admin View */
+              <>
+                <div className="navbar-links">
+                  <Link to="/admin" className="navbar-link">
+                    Admin Dashboard
+                  </Link>
+                </div>
+                <button className="navbar-logout" onClick={handleLogout}>
+                  Logout
+                </button>
+              </>
+            ) : (
+              /* Regular User View */
+              <>
+                <form className="navbar-search" onSubmit={handleSearch}>
+                  <input
+                    type="text"
+                    placeholder="Search forums..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="search-input"
+                  />
+                  <button type="submit" className="search-button">
+                    <FontAwesomeIcon icon={faSearch} className="faSearch" />
+                  </button>
+                </form>
+
+                <div className={`navbar-links ${isMobileMenuOpen ? "open" : ""}`}>
+                  <Link to="/chatmenu" className="navbar-link">
+                    <FontAwesomeIcon icon={faComment} className="faComment" />
+                    <div className="nav-words">Chat</div>
+                  </Link>
+                  <Link to="/mood-tracker" className="navbar-link">
+                    <FontAwesomeIcon icon={faSmile} className="faSmile" />
+                    <div className="nav-words">Mood Tracker</div>
+                  </Link>
+                </div>
+
+                <div className="notifications">
+                  <button
+                    onClick={toggleNotifications}
+                    className="notifications-button"
+                  >
+                    <FontAwesomeIcon icon={faBell} className="faBell" /> (
+                    {notifications.length})
+                  </button>
+                  {showNotifications && (
+                    <div className="notifications-dropdown">
+                      {notifications.length > 0 ? (
+                        notifications.map((notification) => (
+                          <div key={notification.id} className="notification-item">
+                            {notification.message}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="no-notifications">No notifications</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <button className="mobile-menu-button" onClick={toggleMobileMenu}>
+                  <FontAwesomeIcon icon={faBars} className="faBars" />
+                </button>
+
+                <button className="navbar-logout" onClick={handleLogout}>
+                  Logout
+                </button>
+              </>
+            )}
+          </>
+        ) : (
+          /* When no user is logged in */
+          <>
+          <div className="navbar-links">
+            <Link to="/admin" className="navbar-link">
+              Admin Dashboard
+            </Link>
+          </div>
+          <button className="navbar-logout" onClick={handleLogout}>
+            Logout
           </button>
-        </form>
-
-        {/* New post button */}
-        {/* <button
-          className="navbar-newpost"
-          onClick={() => setCreatingPost(true)}
-        >
-          <FontAwesomeIcon icon={faPlus} className="faPlus" />
-          <div className="nav-words">New</div>
-        </button> */}
-
-        {/* Links */}
-        <div className={`navbar-links ${isMobileMenuOpen ? "open" : ""}`}>
-          <Link to="/chatmenu" className="navbar-link">
-            <FontAwesomeIcon icon={faComment} className="faComment" />
-            <div className="nav-words">Chat</div>
-          </Link>
-          <Link to="/mood-tracker" className="navbar-link">
-            <FontAwesomeIcon icon={faSmile} className="faSmile" />
-            <div className="nav-words">Mood Tracker</div>
-          </Link>
-        </div>
-
-        {/* Notifications */}
-        <div className="notifications">
-          <button
-            onClick={toggleNotifications}
-            className="notifications-button"
-          >
-            <FontAwesomeIcon icon={faBell} className="faBell" /> (
-            {notifications.length})
-          </button>
-          {showNotifications && (
-            <div className="notifications-dropdown">
-              {notifications.length > 0 ? (
-                notifications.map((notification) => (
-                  <div key={notification.id} className="notification-item">
-                    {notification.message}
-                  </div>
-                ))
-              ) : (
-                <div className="no-notifications">No notifications</div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Mobile menu button */}
-        <button className="mobile-menu-button" onClick={toggleMobileMenu}>
-          <FontAwesomeIcon icon={faBars} className="faBars" />
-        </button>
-
-        {/* Logout button */}
-        <button className="navbar-logout" onClick={handleLogout}>
-          Logout
-        </button>
+        </>
+        )}
       </div>
     </nav>
   );
