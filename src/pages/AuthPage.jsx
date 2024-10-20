@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; 
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, provider, db } from "../configs/firebaseConfig";
 import {
@@ -14,10 +14,8 @@ import "../styles/auth.css";
 
 const cookies = new Cookies();
 
-const AuthPage = (props) => {
-  const { setIsAuth } = props;
+const AuthPage = ({ setIsAuth, handleAuthSuccess }) => {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,25 +26,7 @@ const AuthPage = (props) => {
   const [isLockedOut, setIsLockedOut] = useState(false);
   const [lockoutTimer, setLockoutTimer] = useState(0);
 
-  const getErrorMessage = (errorCode) => {
-    switch (errorCode) {
-      case "auth/invalid-email":
-        return "Invalid email address.";
-      case "auth/user-disabled":
-        return "User account has been disabled.";
-      case "auth/user-not-found":
-        return "No user found with this email.";
-      case "auth/wrong-password":
-        return "Incorrect password.";
-      case "auth/email-already-in-use":
-        return "Email is already in use.";
-      case "auth/invalid-credential":
-        return "Invalid credentials provided.";
-      default:
-        return "An unexpected error occurred. Please try again.";
-    }
-  };
-
+  // Lockout mechanism
   useEffect(() => {
     if (isLockedOut) {
       const timer = setInterval(() => {
@@ -59,16 +39,32 @@ const AuthPage = (props) => {
           return prev - 1;
         });
       }, 1000);
-
       return () => clearInterval(timer);
     }
   }, [isLockedOut]);
 
+  // Helper to map error codes
+  const getErrorMessage = (errorCode) => {
+    switch (errorCode) {
+      case "auth/invalid-email":
+        return "Invalid email address.";
+      case "auth/user-disabled":
+        return "User account has been disabled.";
+      case "auth/user-not-found":
+        return "No user found with this email.";
+      case "auth/wrong-password":
+        return "Incorrect password.";
+      case "auth/email-already-in-use":
+        return "Email is already in use.";
+      default:
+        return "An unexpected error occurred. Please try again.";
+    }
+  };
+
+  // Handle login and registration
   const handleAuth = async () => {
     if (!isRegistering && isLockedOut) {
-      setError(
-        `Too many failed attempts. Please try again in ${lockoutTimer} seconds.`
-      );
+      setError(`Too many failed attempts. Please try again in ${lockoutTimer} seconds.`);
       return;
     }
 
@@ -82,12 +78,12 @@ const AuthPage = (props) => {
       return;
     }
 
-    // Admin login check
+    // Check if logging in as admin
     if (email === "admin@gmail.com" && password === "admin1234") {
-      // Set authentication token or any required data for the admin
       cookies.set("auth-token", "admin-token");
       setIsAuth(true);
-      navigate("/admin"); // Redirect to admin page
+      handleAuthSuccess();
+      navigate("/admin");
       return;
     }
 
@@ -97,63 +93,53 @@ const AuthPage = (props) => {
         return;
       }
       try {
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
+        await updateProfile(user, { displayName: name });
 
-        if (user) {
-          await updateProfile(user, { displayName: name });
+        const userRef = doc(db, "users", user.uid);
+        await setDoc(userRef, {
+          name,
+          bio: "",
+          profilePic: "",
+          email,  // Save email
+          role: email === "admin@gmail.com" ? "admin" : "user", // Assign admin role if email matches
+        });
 
-          const userRef = doc(db, "users", user.uid);
-          await setDoc(userRef, {
-            name,
-            bio: "",
-            profilePic: "",
-          });
-
-          cookies.set("auth-token", user.refreshToken);
-          setIsAuth(true);
-          navigate("/"); // Regular user home page
-        }
+        cookies.set("auth-token", user.refreshToken);
+        setIsAuth(true);
+        handleAuthSuccess();
+        navigate(email === "admin@gmail.com" ? "/admin" : "/home");
       } catch (error) {
-        console.error("Error during authentication:", error.message);
         setError(getErrorMessage(error.code));
       }
     } else {
       try {
-        const userCredential = await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-
         const userRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userRef);
 
         if (userDoc.exists()) {
-          const existingBio = userDoc.data().bio || "";
-          await setDoc(userRef, { bio: existingBio }, { merge: true });
+          const role = userDoc.data().role || "user";
+          cookies.set("auth-token", user.refreshToken);
+          setIsAuth(true);
+          handleAuthSuccess();
+
+          if (role === "admin") {
+            navigate("/admin");
+          } else {
+            navigate("/home");
+          }
         }
-
-        cookies.set("auth-token", user.refreshToken);
-        setIsAuth(true);
-        navigate("/"); // Regular user home page
       } catch (error) {
-        console.error("Error during authentication:", error.message);
         setError(getErrorMessage(error.code));
-
         setLoginAttempts((prev) => prev + 1);
 
         if (loginAttempts + 1 > 3) {
           setIsLockedOut(true);
           setLockoutTimer(300);
-          setError(
-            "Too many failed attempts. You are locked out for 5 minutes."
-          );
+          setError("Too many failed attempts. Locked out for 5 minutes.");
         }
       }
     }
@@ -161,7 +147,7 @@ const AuthPage = (props) => {
 
   const signInWithGoogle = async () => {
     try {
-      const result = await signInWithPopup(auth, provider); // Use provider instead of googleProvider
+      const result = await signInWithPopup(auth, provider);
       const user = result.user;
       cookies.set("auth-token", user.refreshToken);
 
@@ -179,14 +165,16 @@ const AuthPage = (props) => {
           name: user.displayName || "Anonymous",
           bio: bio,
           profilePic: profilePic,
+          email: user.email,  // Save email for role determination
+          role: user.email === "admin@gmail.com" ? "admin" : "user",  // Assign role based on email
         },
         { merge: true }
       );
 
       setIsAuth(true);
-      navigate("/"); // Regular user home page
+      handleAuthSuccess();
+      navigate(user.email === "admin@gmail.com" ? "/admin" : "/home");
     } catch (error) {
-      console.error("Error signing in with Google:", error.message);
       setError(getErrorMessage(error.code));
     }
   };
