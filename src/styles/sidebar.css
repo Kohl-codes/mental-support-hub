@@ -58,13 +58,15 @@
   font-size: 14px;
   color: #fff;
   background-color: var(--primary);
+  cursor: pointer;
 }
 
 .bio-icons {
   color: var(--text);
-  padding: 5px;
+  padding-left: 3px;
   font-size: 20px;
-  background-color: #fff;
+  background-color: #ffff;
+  cursor: pointer;
 }
 
 /* Recent chats and forums */

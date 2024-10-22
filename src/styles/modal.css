@@ -61,7 +61,7 @@ header {
   }
 
   .modal-dialog {
-    padding-top: 20px;
+    padding-top: 10px;
     display: table-cell;
     vertical-align: middle;
   }
@@ -99,6 +99,6 @@ header {
   }
 
   .container {
-    padding: 4px 4px 0;
+    padding: 0 4px 4px 4px;
   }
 }

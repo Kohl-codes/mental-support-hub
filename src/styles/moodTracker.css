@@ -22,15 +22,6 @@
   color: var(--text);
 }
 
-.mood-tracker-container {
-  max-width: 600px; /* Center and constrain width */
-  margin: 0 auto; /* Center the container */
-  padding: 20px;
-  background-color: white; /* White background for the container */
-  border-radius: 10px; /* Rounded corners */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
-}
-
 .mood-selection {
   display: flex;
   justify-content: space-between; /* Space out buttons evenly */
@@ -76,33 +67,71 @@
   color: #ff9800; /* Orange color for loading message */
 }
 
-.mood-history {
+.calendar-count {
+  display: flex;
+  flex: 1;
+  margin-left: 0;
+  width: 100%;
+}
+
+.calendar-container {
+  width: 40%;
+  margin: 20px auto;
+}
+
+.calendar-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  position: relative; /* Change to relative */
+  top: -50%; /* Position at the top */
+  height: 0;
+  width: 25px;
+  z-index: 1;
+}
+
+.mood-icon {
+  width: 30px;
+  height: 30px;
+  margin-left: 40%;
+}
+
+.mood-count-section {
+  display: flex;
+  flex-direction: column;
+  margin-left: 80px;
+  margin-top: 20px;
+  width: 50%;
+}
+
+.mood-count-dropdown {
+  margin-bottom: 20px;
+  color: var(--text);
+  align-self: center;
   width: 80%;
+  padding: 10px;
 }
 
-.mood-history h2 {
-  margin-top: 40px; /* Space above the mood history section */
-  color: var(--text); /* Darker gray for subtitles */
+.mood-count {
+  display: flex;
+  justify-content: space-between;
 }
 
-.mood-history-list {
-  list-style-type: none; /* Remove bullet points */
-  padding: 0; /* Remove padding */
-  overflow-y: scroll;
-  height: 300px;
-  color: rgb(85, 85, 85);
+.mood-count-item {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
 }
 
-.mood-history-item {
-  display: flex; /* Use flexbox for alignment */
-  flex-direction: row;
-  align-items: center; /* Center items vertically */
-  margin: 10px 0; /* Space between items */
-  padding: 10px; /* Padding around each item */
-  border-radius: 8px; /* Rounded corners */
-  width: 95%;
-  background-color: var(--secondary); /* Light background for history items */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+.mood-count-item img {
+  width: 50px;
+  height: 50px;
+}
+
+.mood-count-item span {
+  margin-top: 10px;
 }
 
 @media only screen and (max-width: 700px) {
@@ -118,11 +147,6 @@
 
   .main-content-1 h1 {
     color: var(--text);
-  }
-
-  .mood-tracker-container {
-    max-width: 300px; /* Center and constrain width */
-    margin: 0 auto; /* Center the container */
   }
 
   .mood-selection {
@@ -149,24 +173,36 @@
     font-size: 0.5em; /* Larger font for readability */
   }
 
-  .mood-history {
-    margin: 0 5px 5px 5px;
-    width: 95%;
+  .calendar-count {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-left: 0;
+    width: 100%;
   }
 
-  .mood-history h2 {
-    margin-top: 30px; /* Space above the mood history section */
-    color: var(--text); /* Darker gray for subtitles */
+  .calendar-container {
+    align-items: center;
+    width: 90%;
+    margin: 20px auto;
   }
 
-  .mood-history-list {
-    height: 300px;
-    color: rgb(85, 85, 85);
+  .calendar-tile {
+    top: -50%; /* Position at the top */
+    height: 0;
+    width: 70%;
   }
 
-  .mood-history-item {
-    margin: 10px 0; /* Space between items */
-    padding: 10px; /* Padding around each item */
+  .mood-count-section {
+    margin-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 90%;
+  }
+
+  .mood-count-item img {
+    width: 2em;
+    height: 2em;
   }
 }
 
@@ -185,11 +221,6 @@
     color: var(--text);
   }
 
-  .mood-tracker-container {
-    max-width: 300px; /* Center and constrain width */
-    margin: 0 auto; /* Center the container */
-  }
-
   .mood-selection {
     display: flex;
     justify-content: space-between; /* Space out buttons evenly */
@@ -214,24 +245,31 @@
     font-size: 1em; /* Larger font for readability */
   }
 
-  .mood-history {
-    margin: 0 5px 5px 5px;
-    width: 95%;
+  .calendar-count {
+    width: 90%;
   }
 
-  .mood-history h2 {
-    margin-top: 30px; /* Space above the mood history section */
-    color: var(--text); /* Darker gray for subtitles */
+  .calendar-container {
+    width: 90%;
+    margin: 20px auto;
   }
 
-  .mood-history-list {
-    height: 300px;
-    color: rgb(85, 85, 85);
+  .calendar-tile {
+    top: -50%; /* Position at the top */
+    height: 0;
+    width: 25px;
   }
 
-  .mood-history-item {
-    margin: 10px 0; /* Space between items */
-    padding: 10px; /* Padding around each item */
+  .mood-count-section {
+    margin-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 90%;
+  }
+
+  .mood-count-item img {
+    width: 40px;
+    height: 40px;
   }
 }
 
@@ -250,11 +288,6 @@
     color: var(--text);
   }
 
-  .mood-tracker-container {
-    max-width: 300px; /* Center and constrain width */
-    margin: 0 auto; /* Center the container */
-  }
-
   .mood-selection {
     display: flex;
     justify-content: space-between; /* Space out buttons evenly */
@@ -279,74 +312,30 @@
     font-size: 1em; /* Larger font for readability */
   }
 
-  .mood-history {
-    margin: 0 5px 5px 5px;
-    width: 95%;
+  .calendar-count {
+    width: 90%;
   }
 
-  .mood-history h2 {
-    margin-top: 30px; /* Space above the mood history section */
-    color: var(--text); /* Darker gray for subtitles */
+  .calendar-container {
+    width: 90%;
+    margin: 20px auto;
   }
 
-  .mood-history-list {
-    height: 300px;
-    color: rgb(85, 85, 85);
+  .calendar-tile {
+    top: -50%; /* Position at the top */
+    height: 0;
+    width: 25px;
   }
 
-  .mood-history-item {
-    margin: 10px 0; /* Space between items */
-    padding: 10px; /* Padding around each item */
+  .mood-count-section {
+    margin-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 90%;
+  }
+
+  .mood-count-item img {
+    width: 40px;
+    height: 40px;
   }
 }
-
-.calendar-container {
-  width: 90%;
-  margin: 20px auto;
-}
-
-.calendar-tile {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
-}
-
-.mood-icon {
-  width: 30px;
-  height: 30px;
-}
-
-.mood-count-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.mood-count-dropdown {
-  margin-bottom: 20px;
-}
-
-.mood-count {
-  display: flex;
-  justify-content: space-between;
-}
-
-.mood-count-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.mood-count-item img {
-  width: 40px;
-  height: 40px;
-}
-
-.mood-count-item span {
-  margin-top: 10px;
-}
-

@@ -18,8 +18,8 @@ import angryImage from "../assets/angry.png";
 import calmImage from "../assets/calm.png";
 import anxiousImage from "../assets/anxious.png";
 import tiredImage from "../assets/tired.png";
-import Calendar from "react-calendar"; 
-import "react-calendar/dist/Calendar.css"; 
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 const moods = [
   {
@@ -129,10 +129,7 @@ const MoodTrackerPage = () => {
 
     if (moodEntry) {
       return (
-        <div
-          className="calendar-tile"
-          style={{ backgroundColor: moodEntry.color }}
-        >
+        <div className="calendar-tile">
           <img
             src={moodIcons[moodEntry.mood]}
             alt={moodEntry.moodLabel}
@@ -196,43 +193,45 @@ const MoodTrackerPage = () => {
 
           {loading && <p className="loading-message">Saving your mood...</p>}
 
-          {/* Calendar displaying moods */}
-          <div className="calendar-container">
-            <h2>Mood Calendar</h2>
-            <Calendar
-              tileContent={tileContent}
-              value={new Date()}
-              prevLabel={<span>&lt;</span>}
-              nextLabel={<span>&gt;</span>}
-            />
-          </div>
+          <div className="calendar-count">
+            {/* Calendar displaying moods */}
+            <div className="calendar-container">
+              <h2>Mood Calendar</h2>
+              <Calendar
+                tileContent={tileContent}
+                value={new Date()}
+                prevLabel={<span>&lt;</span>}
+                nextLabel={<span>&gt;</span>}
+              />
+            </div>
 
-          {/* Mood Count Section */}
-          <div className="mood-count-section">
-            <h2>Mood Count</h2>
-            <select
-              className="mood-count-dropdown"
-              value={dateRange}
-              onChange={(e) => setDateRange(e.target.value)}
-            >
-              <option value="week">Past Week</option>
-              <option value="month">Past Month</option>
-              <option value="year">Past Year</option>
-            </select>
+            {/* Mood Count Section */}
+            <div className="mood-count-section">
+              <h2>Mood Count</h2>
+              <select
+                className="mood-count-dropdown"
+                value={dateRange}
+                onChange={(e) => setDateRange(e.target.value)}
+              >
+                <option value="week">Past Week</option>
+                <option value="month">Past Month</option>
+                <option value="year">Past Year</option>
+              </select>
 
-            <div className="mood-count">
-              {moods.map((mood) => (
-                <div key={mood.id} className="mood-count-item">
-                  <img src={mood.image} alt={mood.label} />
-                  <span>
-                    {/* Display count of this mood based on selected date range */}
-                    {
-                      moodHistory.filter((entry) => entry.mood === mood.value)
-                        .length
-                    }
-                  </span>
-                </div>
-              ))}
+              <div className="mood-count">
+                {moods.map((mood) => (
+                  <div key={mood.id} className="mood-count-item">
+                    <img src={mood.image} alt={mood.label} />
+                    <span>
+                      {/* Display count of this mood based on selected date range */}
+                      {
+                        moodHistory.filter((entry) => entry.mood === mood.value)
+                          .length
+                      }
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

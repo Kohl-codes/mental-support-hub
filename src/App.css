@@ -53,3 +53,7 @@ body {
 ::-webkit-scrollbar-track {
   background-color: #f1f1f1;
 }
+
+.sign-out {
+  display: none;
+}
