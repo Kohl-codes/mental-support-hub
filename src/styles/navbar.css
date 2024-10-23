@@ -1,6 +1,6 @@
 .navbar-container {
   background-color: var(--background);
-  height: 90px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -12,39 +12,6 @@
   margin-top: 0;
 }
 
-.navbar-search {
-  display: flex;
-  align-items: center;
-  background-color: #fff;
-  padding-right: 7px;
-  border-radius: 30px;
-}
-
-input {
-  width: 300px;
-  padding: 10px;
-  margin: 5px 0;
-  border-radius: 20px;
-  font-size: 16px;
-}
-
-.faSearch {
-  color: var(--background);
-  background-color: #fff;
-  font-size: var(--h3-font);
-  cursor: pointer;
-}
-
-.navbar-newpost {
-  display: flex;
-  align-items: center;
-  background-color: var(--background);
-  color: #fff;
-  font-size: var(--h3-font);
-  cursor: pointer;
-}
-
-.faPlus,
 .faComment,
 .faSmile,
 .faBell {
@@ -54,7 +21,6 @@ input {
   padding-right: 5px;
 }
 
-.faBars,
 .logo-mobile {
   display: none;
 }
@@ -64,7 +30,8 @@ input {
 }
 
 .navbar-link {
-  margin-left: 60px;
+  margin-right: 30px;
+  margin-left: 30px;
   display: flex;
   align-items: center;
   background-color: var(--background);
@@ -85,6 +52,7 @@ input {
 
 .notifications {
   position: relative;
+  margin-right: 20px;
 }
 
 .notifications-button {
@@ -118,5 +86,85 @@ input {
   border-bottom: none; /* No border for the last item */
 }
 
-@media only screen and (max-width: 768px) {
+.navbar-parts {
+  display: flex;
+  justify-content: space-between;
+}
+
+@media only screen and (max-width: 700px) {
+  .navbar-container {
+    height: 90px;
+    flex-direction: row;
+    align-items: flex-start; /* Align items to the start */
+    padding: 10px; /* Add some padding */
+    width: 100%;
+  }
+
+  .logo-pc {
+    display: none; /* Hide PC logo on mobile */
+  }
+
+  .logo-mobile {
+    display: block; /* Show mobile logo on mobile */
+    width: 50px; /* Adjust width for mobile */
+    height: 50px;
+  }
+
+  .nav-words {
+    display: none;
+  }
+
+  .navbar-parts {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .faComment,
+  .faSmile,
+  .faBell {
+    color: #fff;
+    background-color: var(--background);
+    font-size: 30px;
+    padding-right: 3px;
+  }
+
+  .navbar-link {
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-left: 0px;
+    /* right: 70%; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--h2-font);
+  }
+
+  .navbar-logout {
+    margin-top: 10px;
+    width: 70px;
+    padding: 5px;
+    background-color: var(--error);
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 17px;
+  }
+
+  .notifications {
+    margin-top: 10px;
+    position: relative;
+    margin-right: 0px;
+  }
+
+  .notifications-button {
+    width: 80px;
+  }
+
+  .notifications-dropdown {
+    position: absolute;
+    top: 100%; /* Position it below the button */
+    left: 0; /* Align to the right */
+    width: 40vw; /* Width of the dropdown */
+    padding: 10px 10px 10px 10px;
+  }
 }

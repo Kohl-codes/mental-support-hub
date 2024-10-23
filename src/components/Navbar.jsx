@@ -2,11 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "../configs/firebaseConfig";
 import { signOut } from "firebase/auth";
-import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import pclogo from "../assets/pclogo.png";
 import mobilelogo from "../assets/mobilelogo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faComment, faSmile, faBell, faBars } from "@fortawesome/free-solid-svg-icons";
+import { faComment, faSmile, faBell } from "@fortawesome/free-solid-svg-icons";
 import "../styles/navBar.css";
 
 const NavBar = ({ setSearchResults }) => {
@@ -147,75 +154,66 @@ const NavBar = ({ setSearchResults }) => {
             ) : (
               /* Regular User View */
               <>
-                <form className="navbar-search" onSubmit={handleSearch}>
-                  <input
-                    type="text"
-                    placeholder="Search forums..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="search-input"
-                  />
-                  <button type="submit" className="search-button">
-                    <FontAwesomeIcon icon={faSearch} className="faSearch" />
-                  </button>
-                </form>
-
-                <div className={`navbar-links ${isMobileMenuOpen ? "open" : ""}`}>
-                  <Link to="/chatmenu" className="navbar-link">
-                    <FontAwesomeIcon icon={faComment} className="faComment" />
-                    <div className="nav-words">Chat</div>
-                  </Link>
-                  <Link to="/mood-tracker" className="navbar-link">
-                    <FontAwesomeIcon icon={faSmile} className="faSmile" />
-                    <div className="nav-words">Mood Tracker</div>
-                  </Link>
-                </div>
-
-                <div className="notifications">
-                  <button
-                    onClick={toggleNotifications}
-                    className="notifications-button"
+                <div className="navbar-parts">
+                  <div
+                    className={`navbar-links ${isMobileMenuOpen ? "open" : ""}`}
                   >
-                    <FontAwesomeIcon icon={faBell} className="faBell" /> (
-                    {notifications.length})
-                  </button>
-                  {showNotifications && (
-                    <div className="notifications-dropdown">
-                      {notifications.length > 0 ? (
-                        notifications.map((notification) => (
-                          <div key={notification.id} className="notification-item">
-                            {notification.message}
-                          </div>
-                        ))
-                      ) : (
-                        <div className="no-notifications">No notifications</div>
+                    <Link to="/chatmenu" className="navbar-link">
+                      <FontAwesomeIcon icon={faComment} className="faComment" />
+                      <div className="nav-words">Chat</div>
+                    </Link>
+                    <Link to="/mood-tracker" className="navbar-link">
+                      <FontAwesomeIcon icon={faSmile} className="faSmile" />
+                      <div className="nav-words">Mood Tracker</div>
+                    </Link>
+                    <div className="notifications">
+                      <button
+                        onClick={toggleNotifications}
+                        className="notifications-button"
+                      >
+                        <FontAwesomeIcon icon={faBell} className="faBell" /> (
+                        {notifications.length})
+                      </button>
+                      {showNotifications && (
+                        <div className="notifications-dropdown">
+                          {notifications.length > 0 ? (
+                            notifications.map((notification) => (
+                              <div
+                                key={notification.id}
+                                className="notification-item"
+                              >
+                                {notification.message}
+                              </div>
+                            ))
+                          ) : (
+                            <div className="no-notifications">
+                              No notifications
+                            </div>
+                          )}
+                        </div>
                       )}
                     </div>
-                  )}
+
+                    <button className="navbar-logout" onClick={handleLogout}>
+                      Logout
+                    </button>
+                  </div>
                 </div>
-
-                <button className="mobile-menu-button" onClick={toggleMobileMenu}>
-                  <FontAwesomeIcon icon={faBars} className="faBars" />
-                </button>
-
-                <button className="navbar-logout" onClick={handleLogout}>
-                  Logout
-                </button>
               </>
             )}
           </>
         ) : (
           /* When no user is logged in */
           <>
-          <div className="navbar-links">
-            <Link to="/admin" className="navbar-link">
-              Admin Dashboard
-            </Link>
-          </div>
-          <button className="navbar-logout" onClick={handleLogout}>
-            Logout
-          </button>
-        </>
+            <div className="navbar-links">
+              <Link to="/admin" className="navbar-link">
+                Admin Dashboard
+              </Link>
+            </div>
+            <button className="navbar-logout" onClick={handleLogout}>
+              Logout
+            </button>
+          </>
         )}
       </div>
     </nav>
