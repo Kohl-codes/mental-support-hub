@@ -1,31 +1,55 @@
+import React, { useState, useEffect } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { auth, db } from "../configs/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, db } from '../firebaseConfig';
-import { getDoc, doc } from 'firebase/firestore';
+const ProtectedAdminRoute = () => {
+  const [isAdmin, setIsAdmin] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-const ProtectedAdminRoute = ({ children }) => {
-  const [user, loading] = useAuthState(auth);
-  const [isAdmin, setIsAdmin] = React.useState(false);
-
-  React.useEffect(() => {
+  useEffect(() => {
     const checkAdmin = async () => {
-      if (user) {
-        const docRef = doc(db, 'users', user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists() && docSnap.data().role === 'admin') {
-          setIsAdmin(true);
+      const user = auth.currentUser;
+      if (!user) {
+        setIsAdmin(false);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const userRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+          const role = userDoc.data().role;
+          setIsAdmin(role === "admin");
+        } else {
+          setIsAdmin(false);
         }
+      } catch (error) {
+        console.error("Error checking admin status: ", error);
+        setIsAdmin(false);
+      } finally {
+        setLoading(false);
       }
     };
-    checkAdmin();
-  }, [user]);
 
-  if (loading) return <p>Loading...</p>;
-  if (!user || !isAdmin) return <Navigate to="/" />;
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        checkAdmin();
+      } else {
+        setIsAdmin(false);
+        setLoading(false);
+      }
+    });
 
-  return children;
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return isAdmin ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default ProtectedAdminRoute;

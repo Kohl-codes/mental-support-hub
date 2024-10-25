@@ -43,7 +43,7 @@ const AuthPage = ({ setIsAuth, handleAuthSuccess }) => {
     }
   }, [isLockedOut]);
 
-  // Helper to map error codes
+  // Helper to map error codes to user-friendly messages
   const getErrorMessage = (errorCode) => {
     switch (errorCode) {
       case "auth/invalid-email":
@@ -102,7 +102,7 @@ const AuthPage = ({ setIsAuth, handleAuthSuccess }) => {
           name,
           bio: "",
           profilePic: "",
-          email,  // Save email
+          email,
           role: email === "admin@gmail.com" ? "admin" : "user", // Assign admin role if email matches
         });
 
@@ -165,8 +165,8 @@ const AuthPage = ({ setIsAuth, handleAuthSuccess }) => {
           name: user.displayName || "Anonymous",
           bio: bio,
           profilePic: profilePic,
-          email: user.email,  // Save email for role determination
-          role: user.email === "admin@gmail.com" ? "admin" : "user",  // Assign role based on email
+          email: user.email,
+          role: user.email === "admin@gmail.com" ? "admin" : "user", // Assign role based on email
         },
         { merge: true }
       );

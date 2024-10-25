@@ -2,18 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "../configs/firebaseConfig";
 import { signOut } from "firebase/auth";
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-  doc,
-  getDoc,
-} from "firebase/firestore";
+import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
 import pclogo from "../assets/pclogo.png";
 import mobilelogo from "../assets/mobilelogo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComment, faSmile, faBell } from "@fortawesome/free-solid-svg-icons";
+import { faComment, faSmile, faBell, faSearch } from "@fortawesome/free-solid-svg-icons";
 import "../styles/navBar.css";
 
 const NavBar = ({ setSearchResults }) => {
@@ -22,7 +15,7 @@ const NavBar = ({ setSearchResults }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   // Check if the current user is an admin
@@ -30,7 +23,7 @@ const NavBar = ({ setSearchResults }) => {
     const checkUserRole = async () => {
       const userId = auth.currentUser?.uid;
       if (!userId) {
-        setLoading(false); // No user logged in, stop loading
+        setLoading(false);
         return;
       }
 
@@ -44,7 +37,7 @@ const NavBar = ({ setSearchResults }) => {
       } catch (error) {
         console.error("Error checking user role: ", error);
       } finally {
-        setLoading(false); // Finished loading
+        setLoading(false);
       }
     };
 
@@ -52,7 +45,7 @@ const NavBar = ({ setSearchResults }) => {
       if (user) {
         checkUserRole();
       } else {
-        setLoading(false); // No user, stop loading
+        setLoading(false);
       }
     });
 
@@ -137,84 +130,104 @@ const NavBar = ({ setSearchResults }) => {
           </Link>
         </div>
 
+        
         {auth.currentUser ? (
           <>
             {isAdmin ? (
-              /* Admin View */
-              <>
-                <div className="navbar-links">
-                  <Link to="/admin" className="navbar-link">
-                    Admin Dashboard
-                  </Link>
-                </div>
+              // Admin View
+              <div className="navbar-links">
+                <Link to="/admin" className="navbar-link">
+                  Admin Dashboard
+                </Link>
                 <button className="navbar-logout" onClick={handleLogout}>
                   Logout
                 </button>
-              </>
+              </div>
             ) : (
-              /* Regular User View */
+              // Regular User View
               <>
-                <div className="navbar-parts">
-                  <div
-                    className={`navbar-links ${isMobileMenuOpen ? "open" : ""}`}
-                  >
-                    <Link to="/chatmenu" className="navbar-link">
-                      <FontAwesomeIcon icon={faComment} className="faComment" />
-                      <div className="nav-words">Chat</div>
-                    </Link>
-                    <Link to="/mood-tracker" className="navbar-link">
-                      <FontAwesomeIcon icon={faSmile} className="faSmile" />
-                      <div className="nav-words">Mood Tracker</div>
-                    </Link>
-                    <div className="notifications">
-                      <button
-                        onClick={toggleNotifications}
-                        className="notifications-button"
-                      >
-                        <FontAwesomeIcon icon={faBell} className="faBell" /> (
-                        {notifications.length})
-                      </button>
-                      {showNotifications && (
-                        <div className="notifications-dropdown">
-                          {notifications.length > 0 ? (
-                            notifications.map((notification) => (
-                              <div
-                                key={notification.id}
-                                className="notification-item"
-                              >
-                                {notification.message}
-                              </div>
-                            ))
-                          ) : (
-                            <div className="no-notifications">
-                              No notifications
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-
-                    <button className="navbar-logout" onClick={handleLogout}>
-                      Logout
+                <div className="navbar-links">
+                  <Link to="/chatmenu" className="navbar-link">
+                    <FontAwesomeIcon icon={faComment} />
+                    <span className="nav-words">Chat</span>
+                  </Link>
+                  <Link to="/mood-tracker" className="navbar-link">
+                    <FontAwesomeIcon icon={faSmile} />
+                    <span className="nav-words">Mood Tracker</span>
+                  </Link>
+                  <div className="notifications">
+                    <button
+                      onClick={toggleNotifications}
+                      className="notifications-button"
+                    >
+                      <FontAwesomeIcon icon={faBell} /> ({notifications.length})
                     </button>
+                    {showNotifications && (
+                      <div className="notifications-dropdown">
+                        {notifications.length > 0 ? (
+                          notifications.map((notification) => (
+                            <div key={notification.id} className="notification-item">
+                              {notification.message}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="no-notifications">
+                            No notifications
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
+                  <button className="navbar-logout" onClick={handleLogout}>
+                    Logout
+                  </button>
                 </div>
               </>
             )}
           </>
         ) : (
-          /* When no user is logged in */
-          <>
-            <div className="navbar-links">
-              <Link to="/admin" className="navbar-link">
-                Admin Dashboard
-              </Link>
-            </div>
-            <button className="navbar-logout" onClick={handleLogout}>
-              Logout
-            </button>
-          </>
+          
+          // Admin View
+          <div className="navbar-links">
+          <button className="navbar-logout" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
         )}
+
+        {/* Mobile Menu Toggle */}
+        {/* <div className={`mobile-menu ${isMobileMenuOpen ? "open" : ""}`}>
+          <button className="mobile-menu-toggle" onClick={toggleMobileMenu}>
+            ☰
+          </button>
+          {isMobileMenuOpen && (
+            <div className="mobile-menu-items">
+              {auth.currentUser ? (
+                isAdmin ? (
+                  <Link to="/admin" className="mobile-link">
+                    Admin Dashboard
+                  </Link>
+                ) : (
+                  <>
+                    <Link to="/chatmenu" className="mobile-link">
+                      Chat
+                    </Link>
+                    <Link to="/mood-tracker" className="mobile-link">
+                      Mood Tracker
+                    </Link>
+                    <button className="mobile-logout" onClick={handleLogout}>
+                      Logout
+                    </button>
+                  </>
+                )
+              ) : (
+                <Link to="/login" className="mobile-link">
+                  Login
+                </Link>
+              )}
+            </div>
+          )}
+        </div> */}
       </div>
     </nav>
   );

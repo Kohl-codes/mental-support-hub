@@ -7,6 +7,8 @@ import {
   addDoc,
   doc,
   getDoc,
+  updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db, auth } from "../configs/firebaseConfig";
 import Navbar from "../components/Navbar";
@@ -14,7 +16,7 @@ import Sidebar from "../components/Sidebar";
 import "../styles/chatmenu.css";
 import "../styles/modal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock, faComment } from "@fortawesome/free-solid-svg-icons";
+import { faLock, faComment, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const ChatMenuPage = ({ setRoom }) => {
   const [rooms, setRooms] = useState([]);
@@ -23,6 +25,9 @@ const ChatMenuPage = ({ setRoom }) => {
   const [isPasswordProtected, setIsPasswordProtected] = useState(false);
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState("");
+  const [editingPostId, setEditingPostId] = useState(null);
+  const [editedContent, setEditedContent] = useState("");
+  const [loading, setLoading] = useState(false); // For UI feedback
   const navigate = useNavigate();
   const chatroomsRef = collection(db, "chatrooms");
   const postsRef = collection(db, "posts");
@@ -42,15 +47,15 @@ const ChatMenuPage = ({ setRoom }) => {
     return () => unsubscribe();
   }, []);
 
-  // Fetch forum posts
+  // Fetch posts
   useEffect(() => {
     const q = query(postsRef);
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      let forumPosts = [];
+      let postList = [];
       snapshot.forEach((doc) => {
-        forumPosts.push({ ...doc.data(), id: doc.id });
+        postList.push({ ...doc.data(), id: doc.id });
       });
-      setPosts(forumPosts);
+      setPosts(postList);
     });
 
     return () => unsubscribe();
@@ -77,25 +82,61 @@ const ChatMenuPage = ({ setRoom }) => {
     }
   };
 
-  // Handle joining a chatroom
+  // Join a chatroom
   const handleJoinRoom = (roomName) => {
     setRoom(roomName);
     navigate(`/chat`);
   };
 
-  // Handle creating a new forum post
+  // Create a new post
   const handleCreatePost = async (e) => {
     e.preventDefault();
-    if (!newPost) return;
+    if (!newPost.trim()) return; // Prevent empty posts
 
-    await addDoc(postsRef, {
-      content: newPost,
-      createdBy: currentUser.displayName,
-      createdById: currentUser.uid,
-      createdAt: new Date(),
-    });
+    setLoading(true); // Show loading while post is being created
+    try {
+      await addDoc(postsRef, {
+        content: newPost,
+        createdBy: currentUser.displayName,
+        createdById: currentUser.uid,
+        createdAt: new Date(),
+      });
+      setNewPost(""); // Clear input field after posting
+    } catch (error) {
+      console.error("Error creating post: ", error);
+    } finally {
+      setLoading(false); // Hide loading
+    }
+  };
 
-    setNewPost("");
+  // Edit an existing post
+  const handleEditPost = async (postId) => {
+    if (!editedContent.trim()) return; // Prevent empty updates
+
+    setLoading(true); // Show loading while editing
+    try {
+      const postDocRef = doc(postsRef, postId);
+      await updateDoc(postDocRef, { content: editedContent });
+      setEditingPostId(null); // Exit edit mode
+      setEditedContent(""); // Clear edit input
+    } catch (error) {
+      console.error("Error editing post: ", error);
+    } finally {
+      setLoading(false); // Hide loading
+    }
+  };
+
+  // Delete a post
+  const handleDeletePost = async (postId) => {
+    setLoading(true); // Show loading while deleting
+    try {
+      const postDocRef = doc(postsRef, postId);
+      await deleteDoc(postDocRef);
+    } catch (error) {
+      console.error("Error deleting post: ", error);
+    } finally {
+      setLoading(false); // Hide loading
+    }
   };
 
   return (
@@ -110,9 +151,7 @@ const ChatMenuPage = ({ setRoom }) => {
           <div className="modal-dialog">
             <div className="modal-content">
               <header className="container">
-                <a href="#" className="closebtn">
-                  ×
-                </a>
+                <a href="#" className="closebtn">×</a>
                 <h2>Profile</h2>
               </header>
               <div className="container">
@@ -121,6 +160,7 @@ const ChatMenuPage = ({ setRoom }) => {
             </div>
           </div>
         </div>
+
         <div className="chat-menu-container">
           <div className="chat-container">
             <h1>Chatrooms</h1>
@@ -170,8 +210,9 @@ const ChatMenuPage = ({ setRoom }) => {
               </form>
             </div>
           </div>
-          <div className="forum-container">
-            <h1>Forum</h1>
+
+          <div className="post-container">
+            <h1>Posts</h1>
             <form onSubmit={handleCreatePost} className="post-form">
               <input
                 type="text"
@@ -180,20 +221,48 @@ const ChatMenuPage = ({ setRoom }) => {
                 onChange={(e) => setNewPost(e.target.value)}
                 required
               />
-              <button type="submit">Post</button>
+              <button type="submit" disabled={loading}>
+                {loading ? "Posting..." : "Post"}
+              </button>
             </form>
             <div className="post-list">
               {posts.map((post) => (
                 <div key={post.id} className="post-item">
-                  <small>
-                    <FontAwesomeIcon icon={faComment} /> {post.content}
-                  </small>
-                  <p>
-                    Posted by {post.createdBy} on{" "}
-                    {new Date(post.createdAt).toLocaleString()}
-                  </p>
-                  {post.createdById === currentUser.uid && ( // Check if the post was created by the current user
-                    <p className="your-post"> (Your Post)</p>
+                  {editingPostId === post.id ? (
+                    <>
+                      <input
+                        type="text"
+                        value={editedContent}
+                        onChange={(e) => setEditedContent(e.target.value)}
+                      />
+                      <button onClick={() => handleEditPost(post.id)} disabled={loading}>
+                        {loading ? "Saving..." : "Save"}
+                      </button>
+                      <button onClick={() => setEditingPostId(null)}>Cancel</button>
+                    </>
+                  ) : (
+                    <>
+                      <small>
+                        <FontAwesomeIcon icon={faComment} /> {post.content}
+                      </small>
+                      <p>
+                        Posted by {post.createdBy} on{" "}
+                        {new Date(post.createdAt).toLocaleString()}
+                      </p>
+                      {post.createdById === currentUser.uid && (
+                        <div className="post-actions">
+                          <button onClick={() => {
+                            setEditingPostId(post.id);
+                            setEditedContent(post.content);
+                          }}>
+                            <FontAwesomeIcon icon={faEdit} /> Edit
+                          </button>
+                          <button onClick={() => handleDeletePost(post.id)} disabled={loading}>
+                            {loading ? "Deleting..." : <><FontAwesomeIcon icon={faTrash} /> Delete</>}
+                          </button>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               ))}
