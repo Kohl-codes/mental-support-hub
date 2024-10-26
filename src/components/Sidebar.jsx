@@ -170,7 +170,7 @@ const Sidebar = () => {
 
       {/* Recent Forums Section */}
       <div className="recent-forums">
-        <h4>Recent Forums</h4>
+        <h4>Recent Posts</h4>
         {recentForums.length > 0 ? (
           recentForums.map((forum) => (
             <div key={forum.id} className="forum-item">

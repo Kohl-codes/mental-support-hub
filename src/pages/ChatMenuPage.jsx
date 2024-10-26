@@ -16,7 +16,12 @@ import Sidebar from "../components/Sidebar";
 import "../styles/chatmenu.css";
 import "../styles/modal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock, faComment, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLock,
+  faComment,
+  faEdit,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 
 const ChatMenuPage = ({ setRoom }) => {
   const [rooms, setRooms] = useState([]);
@@ -151,7 +156,9 @@ const ChatMenuPage = ({ setRoom }) => {
           <div className="modal-dialog">
             <div className="modal-content">
               <header className="container">
-                <a href="#" className="closebtn">×</a>
+                <a href="#" className="closebtn">
+                  ×
+                </a>
                 <h2>Profile</h2>
               </header>
               <div className="container">
@@ -169,9 +176,7 @@ const ChatMenuPage = ({ setRoom }) => {
                 <div key={room.id} className="room-item">
                   <h3>{room.name}</h3>
                   {room.password && (
-                    <span>
-                      <FontAwesomeIcon icon={faLock} />
-                    </span>
+                    <span>{<FontAwesomeIcon icon={faLock} />}</span>
                   )}
                   <button onClick={() => handleJoinRoom(room.name)}>
                     Join
@@ -212,7 +217,7 @@ const ChatMenuPage = ({ setRoom }) => {
           </div>
 
           <div className="post-container">
-            <h1>Posts</h1>
+            <h1>Bulletin</h1>
             <form onSubmit={handleCreatePost} className="post-form">
               <input
                 type="text"
@@ -235,10 +240,17 @@ const ChatMenuPage = ({ setRoom }) => {
                         value={editedContent}
                         onChange={(e) => setEditedContent(e.target.value)}
                       />
-                      <button onClick={() => handleEditPost(post.id)} disabled={loading}>
-                        {loading ? "Saving..." : "Save"}
-                      </button>
-                      <button onClick={() => setEditingPostId(null)}>Cancel</button>
+                      <div className="post-actions">
+                        <button
+                          onClick={() => handleEditPost(post.id)}
+                          disabled={loading}
+                        >
+                          {loading ? "Saving..." : "Save"}
+                        </button>
+                        <button onClick={() => setEditingPostId(null)}>
+                          Cancel
+                        </button>
+                      </div>
                     </>
                   ) : (
                     <>
@@ -251,14 +263,25 @@ const ChatMenuPage = ({ setRoom }) => {
                       </p>
                       {post.createdById === currentUser.uid && (
                         <div className="post-actions">
-                          <button onClick={() => {
-                            setEditingPostId(post.id);
-                            setEditedContent(post.content);
-                          }}>
-                            <FontAwesomeIcon icon={faEdit} /> Edit
+                          <button
+                            onClick={() => {
+                              setEditingPostId(post.id);
+                              setEditedContent(post.content);
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faEdit} />
                           </button>
-                          <button onClick={() => handleDeletePost(post.id)} disabled={loading}>
-                            {loading ? "Deleting..." : <><FontAwesomeIcon icon={faTrash} /> Delete</>}
+                          <button
+                            onClick={() => handleDeletePost(post.id)}
+                            disabled={loading}
+                          >
+                            {loading ? (
+                              "Deleting..."
+                            ) : (
+                              <>
+                                <FontAwesomeIcon icon={faTrash} />
+                              </>
+                            )}
                           </button>
                         </div>
                       )}

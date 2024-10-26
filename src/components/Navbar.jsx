@@ -2,11 +2,23 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "../configs/firebaseConfig";
 import { signOut } from "firebase/auth";
-import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import pclogo from "../assets/pclogo.png";
 import mobilelogo from "../assets/mobilelogo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComment, faSmile, faBell, faSearch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faComment,
+  faSmile,
+  faBell,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons";
 import "../styles/navBar.css";
 
 const NavBar = ({ setSearchResults }) => {
@@ -130,7 +142,6 @@ const NavBar = ({ setSearchResults }) => {
           </Link>
         </div>
 
-        
         {auth.currentUser ? (
           <>
             {isAdmin ? (
@@ -166,7 +177,10 @@ const NavBar = ({ setSearchResults }) => {
                       <div className="notifications-dropdown">
                         {notifications.length > 0 ? (
                           notifications.map((notification) => (
-                            <div key={notification.id} className="notification-item">
+                            <div
+                              key={notification.id}
+                              className="notification-item"
+                            >
                               {notification.message}
                             </div>
                           ))
@@ -186,13 +200,12 @@ const NavBar = ({ setSearchResults }) => {
             )}
           </>
         ) : (
-          
           // Admin View
           <div className="navbar-links">
-          <button className="navbar-logout" onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
+            <button className="navbar-logout" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
         )}
 
         {/* Mobile Menu Toggle */}
