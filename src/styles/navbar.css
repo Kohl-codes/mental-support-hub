@@ -29,6 +29,10 @@
   display: flex;
 }
 
+.navbar-links .nav-words {
+  margin-left: 10px;
+}
+
 .navbar-link {
   margin-right: 30px;
   margin-left: 30px;

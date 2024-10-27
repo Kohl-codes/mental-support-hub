@@ -1,14 +1,17 @@
 /* General sidebar layout */
 .sidebar {
   width: 250px;
-  border-right: 1px solid #ddd;
+  padding: 20px;
+  background-color: #f4f6f9;
   height: 100vh;
-  display: block;
+  display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: start;
+  border-right: 1px solid #e0e0e0;
   color: var(--primary);
 }
 
+/* Profile Section */
 .profile-section {
   text-align: center;
   margin-bottom: 30px;
@@ -20,126 +23,149 @@
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 10px;
-  border: 2px solid #ccc;
+  border: 3px solid var(--primary);
 }
 
 .profile-section h3 {
   margin: 0;
-  font-size: var(--h4-font);
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--primary);
 }
 
 .profile-section p {
   font-size: 14px;
+  color: var(--text);
   margin-top: 5px;
-  color: var(--primary);
 }
 
 .bio {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
 .bio-edit-container textarea {
   width: 90%;
   border: 1px solid #ddd;
   border-radius: 6px;
-  margin-left: 5%;
-  padding: 10px;
+  padding: 8px;
   font-size: 14px;
-  margin-bottom: 5px;
+  margin: 8px 0;
   resize: none;
 }
 
 .bio-edit-container button {
-  width: 30%;
-  border-radius: 6px;
-  padding: 5px;
+  padding: 5px 10px;
   font-size: 14px;
   color: #fff;
   background-color: var(--primary);
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.bio-edit-container button:hover {
+  background-color: #3b82f6;
 }
 
 .bio-icons {
-  color: var(--text);
-  padding-left: 3px;
+  color: var(--primary);
   font-size: 20px;
-  background-color: #ffff;
   cursor: pointer;
 }
 
-/* Recent chats and forums */
-h4 {
-  font-size: var(--h4-font);
-  font-weight: 500;
-  margin-bottom: 10px;
+/* Add Friends Section */
+.add-friends {
+  flex-grow: 1;
+  padding-top: 15px;
 }
 
-.recent-chats,
-.recent-forums {
-  margin-bottom: 30px;
-  padding-top: 10px;
-  border-top: solid 1px var(--primary);
-  color: var(--text);
-  margin-bottom: 30px;
-  overflow-y: scroll;
-  max-height: 200px;
-  padding-right: 5px;
+.add-friends h4 {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 12px;
 }
 
-.chat-item,
-.forum-item {
+.user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 10px;
-  background-color: #fff;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.2s ease;
+  background-color: #ffffff;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.chat-item:hover,
-.forum-item:hover {
-  background-color: var(--primary);
-  color: #fff;
-}
-
-.chat-item p,
-.forum-item p {
+.user-item p {
   margin: 0;
   font-size: 14px;
-  color: var(--text);
+  color: #333;
 }
 
-p {
-  color: #999;
+/* Button styles */
+.friend-btn {
+  padding: 5px 8px;
+  border-radius: 6px;
   font-size: 12px;
+  font-weight: bold;
+  color: #4CAF50;
+  border: none;
+  background-color: #d4edda;
+  cursor: default;
 }
 
-@media only screen and (max-width: 330px) {
+.add-friend-btn {
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+  border: none;
+  background-color: #3b82f6;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-friend-btn:hover {
+  background-color: #2563eb;
+}
+
+/* Scrollable Friends List */
+.add-friends {
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.add-friends::-webkit-scrollbar {
+  width: 6px;
+}
+
+.add-friends::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 6px;
+}
+
+/* Mobile responsive adjustments */
+@media only screen and (max-width: 768px) {
   .sidebar {
-    display: none;
-    margin-left: 4%;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
   }
-}
 
-@media only screen and (min-width: 340px) and (max-width: 400px) {
-  .sidebar {
-    display: none;
-    margin-left: 10%;
+  .profile-section h3 {
+    font-size: 16px;
   }
-}
 
-@media only screen and (min-width: 401px) and (max-width: 600px) {
-  .sidebar {
-    display: none;
-    margin-left: 15%;
-  }
-}
-
-@media only screen and (min-width: 601px) and (max-width: 800px) {
-  .sidebar {
-    display: none;
-    margin-left: 30%;
+  .add-friends h4 {
+    font-size: 14px;
+    text-align: center;
   }
 }

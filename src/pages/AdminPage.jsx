@@ -11,12 +11,16 @@ import "../styles/admin.css";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import ReportModal from "../components/ReportModal"; // Import the ReportModal component
 
 const AdminPage = () => {
   const [users, setUsers] = useState([]);
   const [forums, setForums] = useState([]);
+  const [reports, setReports] = useState([]); // State for reported posts
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalForums, setTotalForums] = useState(0);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false); // State for report modal
+  const [selectedPostId, setSelectedPostId] = useState(null); // State for selected post ID for reporting
 
   // Fetch all users from Firebase
   useEffect(() => {
@@ -29,7 +33,7 @@ const AdminPage = () => {
           ...doc.data(),
         }));
         setUsers(userList);
-        setTotalUsers(userList.length);
+        setTotalUsers(userList.length); // Set total users
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -48,7 +52,7 @@ const AdminPage = () => {
           ...doc.data(),
         }));
         setForums(forumList);
-        setTotalForums(forumList.length);
+        setTotalForums(forumList.length); // Set total forums
       } catch (error) {
         console.error("Error fetching forums:", error);
       }
@@ -56,12 +60,30 @@ const AdminPage = () => {
     fetchForums();
   }, []);
 
+  // Fetch all reports from Firebase
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const reportCollection = collection(db, "reports");
+        const reportSnapshot = await getDocs(reportCollection);
+        const reportList = reportSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setReports(reportList);
+      } catch (error) {
+        console.error("Error fetching reports:", error);
+      }
+    };
+    fetchReports();
+  }, []);
+
   // Delete a user
   const handleDeleteUser = async (userId) => {
     try {
       await deleteDoc(doc(db, "users", userId));
       setUsers(users.filter((user) => user.id !== userId));
-      setTotalUsers(totalUsers - 1);
+      setTotalUsers(totalUsers - 1); // Update total users count
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -72,11 +94,7 @@ const AdminPage = () => {
     try {
       const userRef = doc(db, "users", userId);
       await updateDoc(userRef, { role: "admin" });
-      setUsers(
-        users.map((user) =>
-          user.id === userId ? { ...user, role: "admin" } : user
-        )
-      );
+      setUsers(users.map((user) => (user.id === userId ? { ...user, role: "admin" } : user)));
     } catch (error) {
       console.error("Error promoting user:", error);
     }
@@ -87,9 +105,19 @@ const AdminPage = () => {
     try {
       await deleteDoc(doc(db, "forums", forumId));
       setForums(forums.filter((forum) => forum.id !== forumId));
-      setTotalForums(totalForums - 1);
+      setTotalForums(totalForums - 1); // Update total forums count
     } catch (error) {
       console.error("Error deleting forum:", error);
+    }
+  };
+
+  // Delete a reported post
+  const handleDeleteReport = async (reportId) => {
+    try {
+      await deleteDoc(doc(db, "reports", reportId));
+      setReports(reports.filter((report) => report.id !== reportId));
+    } catch (error) {
+      console.error("Error deleting report:", error);
     }
   };
 
@@ -156,6 +184,36 @@ const AdminPage = () => {
             <p>No forums found.</p>
           )}
         </div>
+
+        {/* Reported Posts Management */}
+        <div className="report-management">
+          <h2>Reported Posts</h2>
+          {reports.length > 0 ? (
+            reports.map((report) => (
+              <div key={report.id} className="report-card">
+                  <p>
+                    Post ID: {report.postId} - Reason: {report.reason}
+                  </p>
+                  <div className="report-actions"> {/* Added wrapper for actions */}
+                    <button onClick={() => handleDeleteReport(report.id)}>
+                      <FontAwesomeIcon icon={faTrash} className="faEllipsis" />
+                    </button>
+                  </div>
+                </div>
+
+            ))
+          ) : (
+            <p>No reports found.</p>
+          )}
+
+        </div>
+
+        {/* Report Modal */}
+        <ReportModal
+          isOpen={isReportModalOpen}
+          onClose={() => setIsReportModalOpen(false)}
+          postId={selectedPostId} // Pass the selected post ID to the modal
+        />
       </div>
     </div>
   );

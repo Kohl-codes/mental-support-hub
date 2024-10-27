@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
@@ -9,33 +10,48 @@ import {
   doc,
   arrayUnion,
   getDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db, auth } from "../configs/firebaseConfig";
 import "../styles/home.css";
 import "../styles/modal.css";
+import "../styles/report.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 
 // ReportModal Component
-const ReportModal = ({ isOpen, onClose, onSubmit }) => {
+const ReportModal = ({ isOpen, onClose, postId }) => {
   const [reportReason, setReportReason] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Submitting report..."); // Debug log
     if (reportReason.trim()) {
-      onSubmit(reportReason);
-      setReportReason("");
-      onClose();
+      try {
+        // Add the report to the "reports" collection in Firestore
+        await addDoc(collection(db, "reports"), {
+          postId: postId,
+          reason: reportReason,
+          timestamp: new Date(),
+        });
+        console.log("Report submitted successfully!"); // Debug log
+        setReportReason("");
+        onClose();
+      } catch (error) {
+        console.error("Error reporting post:", error);
+      }
+    } else {
+      console.log("Report reason is empty."); // Debug log
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="modal">
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <header className="modal-header">
+    <div className="report-modal">
+      <div className="report-modal-dialog">
+        <div className="report-modal-content">
+          <header className="report-modal-header">
             <h2>Report Post</h2>
             <button className="closebtn" onClick={onClose}>
               ×
@@ -65,6 +81,8 @@ const HomePage = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [reportPostId, setReportPostId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingContent, setEditingContent] = useState("");
 
   const defaultProfilePic = "/path/to/default-profile-pic.png";
 
@@ -111,6 +129,7 @@ const HomePage = () => {
         content: newPostContent,
         comments: [],
         loves: 0,
+        userId: auth.currentUser.uid, // Store the user ID of the poster
       };
       const docRef = await addDoc(collection(db, "forums"), newPost);
       setPosts([...posts, { id: docRef.id, ...newPost }]);
@@ -175,9 +194,39 @@ const HomePage = () => {
     }
   };
 
+  // Handle report submit
   const handleReportSubmit = (reason) => {
     console.log(`Reported post ${reportPostId} for reason: ${reason}`);
-    // Here you can add logic to save the report to your database or notify an admin.
+    setIsReportModalOpen(false);
+  };
+
+  // Handle delete post
+  const handleDeletePost = async (postId) => {
+    try {
+      await deleteDoc(doc(db, "forums", postId));
+      setPosts(posts.filter((post) => post.id !== postId));
+    } catch (error) {
+      console.error("Error deleting post: ", error);
+    }
+  };
+
+  // Handle edit post
+  const handleEditPost = async (postId) => {
+    if (editingContent.trim() === "") return;
+
+    try {
+      const postRef = doc(db, "forums", postId);
+      await updateDoc(postRef, { content: editingContent });
+      setPosts(
+        posts.map((post) =>
+          post.id === postId ? { ...post, content: editingContent } : post
+        )
+      );
+      setIsEditing(false);
+      setEditingContent("");
+    } catch (error) {
+      console.error("Error editing post: ", error);
+    }
   };
 
   const togglePostOptions = (postId) => {
@@ -259,7 +308,27 @@ const HomePage = () => {
                         </button>
                         {openDropdownId === post.id && (
                           <div className="options-dropdown">
-                            <button onClick={() => setIsReportModalOpen(true)}>
+                            {post.userId === auth.currentUser.uid && (
+                              <>
+                                <button
+                                  onClick={() => {
+                                    setIsEditing(true);
+                                    setEditingContent(post.content);
+                                  }}
+                                >
+                                  Edit
+                                </button>
+                                <button onClick={() => handleDeletePost(post.id)}>
+                                  Delete
+                                </button>
+                              </>
+                            )}
+                            <button
+                              onClick={() => {
+                                setIsReportModalOpen(true);
+                                setReportPostId(post.id);
+                              }}
+                            >
                               Report
                             </button>
                           </div>
@@ -267,9 +336,21 @@ const HomePage = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="post-content">
-                    <p>{post.content}</p>
-                  </div>
+                  {isEditing && reportPostId === post.id ? (
+                    <div className="edit-section">
+                      <textarea
+                        value={editingContent}
+                        onChange={(e) => setEditingContent(e.target.value)}
+                      />
+                      <button onClick={() => handleEditPost(post.id)}>
+                        Save
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="post-content">
+                      <p>{post.content}</p>
+                    </div>
+                  )}
                   <div className="post-actions">
                     <div className="post-stats">
                       <span>{post.loves} 💖</span>
@@ -343,10 +424,11 @@ const HomePage = () => {
       <ReportModal
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
-        onSubmit={handleReportSubmit}
+        postId={reportPostId}
       />
     </div>
   );
 };
+
 
 export default HomePage;

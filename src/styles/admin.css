@@ -37,12 +37,14 @@ h1 {
 }
 
 .user-management,
-.forum-management {
+.forum-management,
+.report-management {
   margin: 20px 0;
 }
 
-.user-management button {
-  margin: auto;
+.user-management button,
+.forum-management button,
+.report-management button {
   cursor: pointer;
   color: var(--error);
   background-color: #ffffff;
@@ -50,11 +52,7 @@ h1 {
 }
 
 .forum-management button {
-  margin-left: 95%;
-  cursor: pointer;
-  color: var(--error);
-  background-color: #ffffff;
-  font-size: 1em;
+  margin-left: 95%; /* Keep this for forum management button */
 }
 
 h2 {
@@ -65,21 +63,31 @@ h2 {
 }
 
 .user-card,
-.forum-card {
+.forum-card,
+.report-card {
   background-color: #ffffff;
   padding: 15px;
   margin-bottom: 15px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex; /* Added to use flexbox */
+  justify-content: space-between; /* Distribute space between items */
+  align-items: center; /* Align items vertically centered */
 }
 
 .user-card p,
-.forum-card p {
+.forum-card p,
+.report-card p {
   margin: 0 0 10px;
   color: #555;
 }
 
-.user-actions {
+.user-actions,
+.report-actions {
   display: flex;
   gap: 10px;
+}
+
+.report-actions { /* Specific styles for report actions */
+  margin-left: auto; /* Push delete button to the right */
 }

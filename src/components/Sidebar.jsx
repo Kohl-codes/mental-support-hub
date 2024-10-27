@@ -4,11 +4,12 @@ import {
   getDocs,
   query,
   where,
-  limit,
   doc,
   updateDoc,
+  getDoc,
 } from "firebase/firestore";
 import { auth, db } from "../configs/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
 import defaultProfilePic from "../assets/defaultPic.jpg";
 import "../styles/sidebar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,81 +22,126 @@ const Sidebar = () => {
     bio: "",
     photoURL: "",
   });
-  const [recentChats, setRecentChats] = useState([]);
-  const [recentForums, setRecentForums] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [newBio, setNewBio] = useState("");
+  const [friends, setFriends] = useState([]);
+  const [friendRequests, setFriendRequests] = useState([]);
 
-  // Fetch user profile data from Firebase
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const user = auth.currentUser;
-        if (user) {
-          // If user logs in using Google, retrieve displayName and photoURL directly from auth
-          const username = user.displayName || "Anonymous";
-          const photoURL = user.photoURL || defaultProfilePic;
-
-          // Fetch additional user profile info from Firestore
-          const userRef = collection(db, "users");
-          const q = query(userRef, where("uid", "==", user.uid));
-          const querySnapshot = await getDocs(q);
-
-          const userData = querySnapshot.docs[0]?.data() || {};
-
-          setUserProfile({
-            ...userData,
-            uid: user.uid,
-            username: userData.username || username, // Use username from Firestore or fallback to displayName from auth
-            photoURL: userData.photoURL || photoURL, // Use photoURL from Firestore or fallback to photoURL from auth
-          });
-
-          setNewBio(userData.bio || "");
-        }
-      } catch (error) {
-        console.error("Error fetching user profile: ", error);
+    // Listen for auth state changes
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        fetchUserProfile(user.uid);
+        fetchAllUsers(user.uid);
+      } else {
+        setUserProfile({});
+        setAllUsers([]);
       }
-    };
-    fetchUserProfile();
+    });
+    return () => unsubscribe();
   }, []);
 
-  // Fetch recent chats from Firebase (Limit to 5)
-  useEffect(() => {
-    const fetchRecentChats = async () => {
-      try {
-        const chatsRef = collection(db, "chats");
-        const q = query(chatsRef, limit(5)); // Limit the result to 5 chats
+  const fetchUserProfile = async (userId) => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const displayName = user.displayName || "Anonymous";
+        const photoURL = user.photoURL || defaultProfilePic;
+        const userRef = collection(db, "users");
+        const q = query(userRef, where("uid", "==", userId));
         const querySnapshot = await getDocs(q);
-        const chats = querySnapshot.docs.map((doc) => ({
+        const userData = querySnapshot.docs[0]?.data() || {};
+
+        setUserProfile({
+          ...userData,
+          uid: userId,
+          username: userData.username || displayName,
+          photoURL: userData.photoURL || photoURL,
+        });
+        setNewBio(userData.bio || "");
+        setFriends(userData.friends || []);
+        setFriendRequests(userData.friendRequests || []);
+      }
+    } catch (error) {
+      console.error("Error fetching user profile: ", error);
+    }
+  };
+
+  const fetchAllUsers = async (currentUserId) => {
+    try {
+      const usersRef = collection(db, "users");
+      const querySnapshot = await getDocs(usersRefS);
+      const users = querySnapshot.docs
+        .map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        }));
-        setRecentChats(chats);
-      } catch (error) {
-        console.error("Error fetching recent chats: ", error);
-      }
-    };
-    fetchRecentChats();
-  }, []);
+        }))
+        .filter((user) => user.uid !== currentUserId);
+      setAllUsers(users);
+    } catch (error) {
+      console.error("Error fetching users: ", error);
+    }
+  };
 
-  // Fetch recent forums from Firebase (Limit to 5)
-  useEffect(() => {
-    const fetchRecentForums = async () => {
-      try {
-        const forumsRef = collection(db, "forums");
-        const q = query(forumsRef, limit(5)); // Limit the result to 5 forums
-        const querySnapshot = await getDocs(q);
-        const forums = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setRecentForums(forums);
-      } catch (error) {
-        console.error("Error fetching recent forums: ", error);
+  // Send friend request
+  const handleAddFriend = async (friendId) => {
+    const currentUserId = auth.currentUser?.uid;
+    if (!currentUserId) return;
+
+    try {
+      const friendRef = doc(db, "users", friendId);
+      const friendDoc = await getDoc(friendRef);
+
+      if (friendDoc.exists()) {
+        const friendRequests = friendDoc.data().friendRequests || [];
+
+        // Add current user ID to friend’s request list
+        await updateDoc(friendRef, {
+          friendRequests: [...friendRequests, currentUserId],
+        });
       }
-    };
-    fetchRecentForums();
-  }, []);
+    } catch (error) {
+      console.error("Error sending friend request: ", error);
+    }
+  };
+
+  // Accept friend request
+  const handleAcceptRequest = async (requesterId) => {
+    const currentUserId = auth.currentUser?.uid;
+    if (!currentUserId) return;
+
+    try {
+      const currentUserRef = doc(db, "users", currentUserId);
+      const requesterRef = doc(db, "users", requesterId);
+
+      // Get the current user's document and requester's document
+      const currentUserDoc = await getDoc(currentUserRef);
+      const requesterDoc = await getDoc(requesterRef);
+
+      if (currentUserDoc.exists() && requesterDoc.exists()) {
+        const currentUserFriends = currentUserDoc.data().friends || [];
+        const requesterFriends = requesterDoc.data().friends || [];
+        const currentUserRequests = currentUserDoc.data().friendRequests || [];
+
+        // Add each user to the other’s friend list and remove the friend request
+        await updateDoc(currentUserRef, {
+          friends: [...currentUserFriends, requesterId],
+          friendRequests: currentUserRequests.filter((id) => id !== requesterId),
+        });
+        await updateDoc(requesterRef, {
+          friends: [...requesterFriends, currentUserId],
+        });
+
+        setFriends((prevFriends) => [...prevFriends, requesterId]);
+        setFriendRequests((prevRequests) =>
+          prevRequests.filter((id) => id !== requesterId)
+        );
+      }
+    } catch (error) {
+      console.error("Error accepting friend request: ", error);
+    }
+  };
 
   const handleEditBioClick = () => {
     setIsEditingBio(!isEditingBio);
@@ -126,12 +172,12 @@ const Sidebar = () => {
       {/* Profile Section */}
       <div className="profile-section">
         <img
-          src={userProfile.photoURL} // Use the fetched 'photoURL'
+          src={userProfile.photoURL}
           alt="User Profile"
           className="profile-picture"
         />
         <div className="bio">
-          <h3>{userProfile.username}</h3> {/* Use the fetched 'username' */}
+          <h3>{userProfile.username}</h3>
           <button onClick={handleEditBioClick}>
             {isEditingBio ? (
               <FontAwesomeIcon icon={faXmark} className="bio-icons" />
@@ -154,31 +200,63 @@ const Sidebar = () => {
         )}
       </div>
 
-      {/* Recent Chats Section */}
-      <div className="recent-chats">
-        <h4>Recent Chats</h4>
-        {recentChats.length > 0 ? (
-          recentChats.map((chat) => (
-            <div key={chat.id} className="chat-item">
-              <p>{chat.title}</p>
+      {/* Add Friends Section */}
+      <div className="add-friends">
+        <h4>Add Friends</h4>
+        {allUsers.length > 0 ? (
+          allUsers.map((user) => (
+            <div key={user.uid} className="user-item">
+              <p>{user.username || user.displayName || "Anonymous"}</p>
+              {friends.includes(user.uid) ? (
+                <button disabled className="friend-btn">
+                  Friends
+                </button>
+              ) : (
+                <button onClick={() => handleAddFriend(user.uid)} className="add-friend-btn">
+                  Add Friend
+                </button>
+              )}
             </div>
           ))
         ) : (
-          <p>No Recent Chats</p>
+          <p>No users available</p>
         )}
       </div>
 
-      {/* Recent Forums Section */}
-      <div className="recent-forums">
-        <h4>Recent Posts</h4>
-        {recentForums.length > 0 ? (
-          recentForums.map((forum) => (
-            <div key={forum.id} className="forum-item">
-              <p>{forum.title}</p>
-            </div>
-          ))
+      {/* Friend Requests Section */}
+      <div className="friend-requests">
+        <h4>Friend Requests</h4>
+        {friendRequests.length > 0 ? (
+          friendRequests.map((requesterId) => {
+            const requester = allUsers.find((user) => user.uid === requesterId);
+            return (
+              <div key={requesterId} className="user-item">
+                <p>{requester?.username || requester?.displayName || "Unknown User"}</p>
+                <button onClick={() => handleAcceptRequest(requesterId)} className="accept-friend-btn">
+                  Accept
+                </button>
+              </div>
+            );
+          })
         ) : (
-          <p>No Forums Yet</p>
+          <p>No friend requests</p>
+        )}
+      </div>
+
+      {/* Friend List Section */}
+      <div className="friend-list">
+        <h4>Your Friends</h4>
+        {friends.length > 0 ? (
+          friends.map((friendId) => {
+            const friend = allUsers.find((user) => user.uid === friendId);
+            return (
+              <div key={friendId} className="user-item">
+                <p>{friend?.username || friend?.displayName || "Unknown Friend"}</p>
+              </div>
+            );
+          })
+        ) : (
+          <p>You have no friends yet.</p>
         )}
       </div>
     </div>

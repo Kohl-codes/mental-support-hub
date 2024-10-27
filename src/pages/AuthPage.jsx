@@ -1,3 +1,4 @@
+// ... existing imports
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, provider, db } from "../configs/firebaseConfig";
@@ -61,89 +62,105 @@ const AuthPage = ({ setIsAuth, handleAuthSuccess }) => {
     }
   };
 
-  // Handle login and registration
-  const handleAuth = async () => {
-    if (!isRegistering && isLockedOut) {
-      setError(`Too many failed attempts. Please try again in ${lockoutTimer} seconds.`);
+// Handle login and registration
+const handleAuth = async () => {
+  // Lockout check
+  if (!isRegistering && isLockedOut) {
+    setError(`Too many failed attempts. Please try again in ${lockoutTimer} seconds.`);
+    return;
+  }
+
+  // Validation checks
+  if (!email || !password || (isRegistering && (!name || !confirmPassword))) {
+    setError("Please fill in all fields.");
+    return;
+  }
+
+  if (password.length < 8 || password.length > 20) {
+    setError("Password must be between 8 and 20 characters.");
+    return;
+  }
+
+  if (isRegistering) {
+    // Registration flow
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
       return;
     }
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      await updateProfile(user, { displayName: name });
 
-    if (!email || !password || (isRegistering && (!name || !confirmPassword))) {
-      setError("Please fill in all fields.");
-      return;
-    }
-
-    if (password.length < 8 || password.length > 20) {
-      setError("Password must be between 8 and 20 characters.");
-      return;
-    }
-
-    // Check if logging in as admin
-    if (email === "admin@gmail.com" && password === "admin1234") {
-      cookies.set("auth-token", "admin-token");
-      setIsAuth(true);
-      handleAuthSuccess();
-      navigate("/admin");
-      return;
-    }
-
-    if (isRegistering) {
-      if (password !== confirmPassword) {
-        setError("Passwords do not match.");
+      // Check if user already exists in Firestore
+      const userRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userRef);
+      
+      if (userDoc.exists()) {
+        setError("User already exists.");
         return;
       }
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        await updateProfile(user, { displayName: name });
 
-        const userRef = doc(db, "users", user.uid);
-        await setDoc(userRef, {
-          name,
-          bio: "",
-          profilePic: "",
-          email,
-          role: email === "admin@gmail.com" ? "admin" : "user", // Assign admin role if email matches
-        });
+      // Set admin role if this is the admin email
+      await setDoc(userRef, {
+        name,
+        bio: "",
+        profilePic: "",
+        email,
+        role: email === "admin@gmail.com" ? "admin" : "user",
+      });
+
+      cookies.set("auth-token", user.refreshToken);
+      setIsAuth(true);
+      handleAuthSuccess();
+      navigate(email === "admin@gmail.com" ? "/admin" : "/home");
+    } catch (error) {
+      setError(getErrorMessage(error.code));
+    }
+  } else {
+    // Login flow
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Retrieve role from Firestore
+      const userRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userRef);
+
+      if (userDoc.exists()) {
+        const role = userDoc.data().role || "user"; // Default to "user" if no role is found
+        console.log("User role:", role); // Debug log for role check
 
         cookies.set("auth-token", user.refreshToken);
         setIsAuth(true);
         handleAuthSuccess();
-        navigate(email === "admin@gmail.com" ? "/admin" : "/home");
-      } catch (error) {
-        setError(getErrorMessage(error.code));
+
+        if (role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/home");
+        }
+
+        // Reset login attempts after successful login
+        setLoginAttempts(0);
+        setIsLockedOut(false);
+      } else {
+        setError("User document not found.");
       }
-    } else {
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        const userRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userRef);
+    } catch (error) {
+      setError(getErrorMessage(error.code));
+      setLoginAttempts((prev) => prev + 1);
 
-        if (userDoc.exists()) {
-          const role = userDoc.data().role || "user";
-          cookies.set("auth-token", user.refreshToken);
-          setIsAuth(true);
-          handleAuthSuccess();
-
-          if (role === "admin") {
-            navigate("/admin");
-          } else {
-            navigate("/home");
-          }
-        }
-      } catch (error) {
-        setError(getErrorMessage(error.code));
-        setLoginAttempts((prev) => prev + 1);
-
-        if (loginAttempts + 1 > 3) {
-          setIsLockedOut(true);
-          setLockoutTimer(300);
-          setError("Too many failed attempts. Locked out for 5 minutes.");
-        }
+      // Lockout logic if login attempts exceed limit
+      if (loginAttempts + 1 >= 3) {
+        setIsLockedOut(true);
+        setLockoutTimer(300); // Lock out for 5 minutes
+        setError("Too many failed attempts. Locked out for 5 minutes.");
       }
     }
-  };
+  }
+};
+
 
   const signInWithGoogle = async () => {
     try {

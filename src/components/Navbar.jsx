@@ -18,6 +18,7 @@ import {
   faSmile,
   faBell,
   faSearch,
+  faHouse,
 } from "@fortawesome/free-solid-svg-icons";
 import "../styles/navBar.css";
 
@@ -136,7 +137,7 @@ const NavBar = ({ setSearchResults }) => {
       <div className="navbar-container">
         {/* Logo */}
         <div className="navbar-logo">
-          <Link to="/">
+          <Link to="/home">
             <img src={pclogo} alt="Logo" className="logo-pc" />
             <img src={mobilelogo} alt="Logo" className="logo-mobile" />
           </Link>
@@ -147,9 +148,6 @@ const NavBar = ({ setSearchResults }) => {
             {isAdmin ? (
               // Admin View
               <div className="navbar-links">
-                <Link to="/admin" className="navbar-link">
-                  Admin Dashboard
-                </Link>
                 <button className="navbar-logout" onClick={handleLogout}>
                   Logout
                 </button>
@@ -158,13 +156,17 @@ const NavBar = ({ setSearchResults }) => {
               // Regular User View
               <>
                 <div className="navbar-links">
+                <Link to="/home" className="navbar-link">
+                    <FontAwesomeIcon icon={faHouse} />
+                    <span className="nav-words"> Home</span>
+                  </Link>
                   <Link to="/chatmenu" className="navbar-link">
                     <FontAwesomeIcon icon={faComment} />
-                    <span className="nav-words">Chat</span>
+                    <span className="nav-words"> Chat</span>
                   </Link>
                   <Link to="/mood-tracker" className="navbar-link">
                     <FontAwesomeIcon icon={faSmile} />
-                    <span className="nav-words">Mood Tracker</span>
+                    <span className="nav-words"> Mood Tracker</span>
                   </Link>
                   <div className="notifications">
                     <button
@@ -200,11 +202,9 @@ const NavBar = ({ setSearchResults }) => {
             )}
           </>
         ) : (
-          // Admin View
+          // Guest View
           <div className="navbar-links">
-            <button className="navbar-logout" onClick={handleLogout}>
-              Logout
-            </button>
+            Login 
           </div>
         )}
 

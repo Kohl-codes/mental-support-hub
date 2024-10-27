@@ -32,37 +32,26 @@ const ChatMenuPage = ({ setRoom }) => {
   const [newPost, setNewPost] = useState("");
   const [editingPostId, setEditingPostId] = useState(null);
   const [editedContent, setEditedContent] = useState("");
-  const [loading, setLoading] = useState(false); // For UI feedback
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
   const chatroomsRef = collection(db, "chatrooms");
   const postsRef = collection(db, "posts");
   const currentUser = auth.currentUser;
 
   // Fetch existing chatrooms
   useEffect(() => {
-    const q = query(chatroomsRef);
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      let chatrooms = [];
-      snapshot.forEach((doc) => {
-        chatrooms.push({ ...doc.data(), id: doc.id });
-      });
-      setRooms(chatrooms);
+    const unsubscribe = onSnapshot(query(chatroomsRef), (snapshot) => {
+      setRooms(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     });
-
     return () => unsubscribe();
   }, []);
 
-  // Fetch posts
+  // Fetch posts in real-time
   useEffect(() => {
-    const q = query(postsRef);
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      let postList = [];
-      snapshot.forEach((doc) => {
-        postList.push({ ...doc.data(), id: doc.id });
-      });
-      setPosts(postList);
+    const unsubscribe = onSnapshot(query(postsRef), (snapshot) => {
+      setPosts(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -96,9 +85,9 @@ const ChatMenuPage = ({ setRoom }) => {
   // Create a new post
   const handleCreatePost = async (e) => {
     e.preventDefault();
-    if (!newPost.trim()) return; // Prevent empty posts
+    if (!newPost.trim()) return;
 
-    setLoading(true); // Show loading while post is being created
+    setLoading(true);
     try {
       await addDoc(postsRef, {
         content: newPost,
@@ -106,41 +95,39 @@ const ChatMenuPage = ({ setRoom }) => {
         createdById: currentUser.uid,
         createdAt: new Date(),
       });
-      setNewPost(""); // Clear input field after posting
+      setNewPost("");
     } catch (error) {
       console.error("Error creating post: ", error);
     } finally {
-      setLoading(false); // Hide loading
+      setLoading(false);
     }
   };
 
   // Edit an existing post
   const handleEditPost = async (postId) => {
-    if (!editedContent.trim()) return; // Prevent empty updates
+    if (!editedContent.trim()) return;
 
-    setLoading(true); // Show loading while editing
+    setLoading(true);
     try {
-      const postDocRef = doc(postsRef, postId);
-      await updateDoc(postDocRef, { content: editedContent });
-      setEditingPostId(null); // Exit edit mode
-      setEditedContent(""); // Clear edit input
+      await updateDoc(doc(postsRef, postId), { content: editedContent });
+      setEditingPostId(null);
+      setEditedContent("");
     } catch (error) {
       console.error("Error editing post: ", error);
     } finally {
-      setLoading(false); // Hide loading
+      setLoading(false);
     }
   };
 
   // Delete a post
   const handleDeletePost = async (postId) => {
-    setLoading(true); // Show loading while deleting
+    setLoading(true);
     try {
-      const postDocRef = doc(postsRef, postId);
-      await deleteDoc(postDocRef);
+      await deleteDoc(doc(postsRef, postId));
     } catch (error) {
       console.error("Error deleting post: ", error);
     } finally {
-      setLoading(false); // Hide loading
+      setLoading(false);
     }
   };
 
@@ -148,17 +135,14 @@ const ChatMenuPage = ({ setRoom }) => {
     <div>
       <Navbar />
       <div className="bg-chat">
-        <a href="#id01" className="profile-btn">
-          Profile
-        </a>
+        <a href="#id01" className="profile-btn">Profile</a>
 
+        {/* Modal for Profile */}
         <div id="id01" className="modal">
           <div className="modal-dialog">
             <div className="modal-content">
               <header className="container">
-                <a href="#" className="closebtn">
-                  ×
-                </a>
+                <a href="#" className="closebtn">×</a>
                 <h2>Profile</h2>
               </header>
               <div className="container">
@@ -169,59 +153,55 @@ const ChatMenuPage = ({ setRoom }) => {
         </div>
 
         <div className="chat-menu-container">
+          {/* Chatrooms Section */}
           <div className="chat-container">
             <h1>Chatrooms</h1>
             <div className="room-list">
               {rooms.map((room) => (
                 <div key={room.id} className="room-item">
                   <h3>{room.name}</h3>
-                  {room.password && (
-                    <span>{<FontAwesomeIcon icon={faLock} />}</span>
-                  )}
-                  <button onClick={() => handleJoinRoom(room.name)}>
-                    Join
-                  </button>
+                  {room.password && <FontAwesomeIcon icon={faLock} />}
+                  <button onClick={() => handleJoinRoom(room.name)}>Join</button>
                 </div>
               ))}
             </div>
-            <div className="new-room-form">
-              <form onSubmit={handleCreateRoom}>
-                <h3>Create a new Room</h3>
-                <input
-                  type="text"
-                  placeholder="Room Name"
-                  value={newRoomName}
-                  onChange={(e) => setNewRoomName(e.target.value)}
-                  required
-                />
-                <div className="protect-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={isPasswordProtected}
-                    onChange={(e) => setIsPasswordProtected(e.target.checked)}
-                  />
-                  <label>Password Protected</label>
-                </div>
-                {isPasswordProtected && (
-                  <input
-                    type="password"
-                    placeholder="Enter Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                )}
-                <button type="submit">Create Room</button>
-              </form>
-            </div>
-          </div>
-
-          <div className="post-container">
-            <h1>Bulletin</h1>
-            <form onSubmit={handleCreatePost} className="post-form">
+            <form onSubmit={handleCreateRoom} className="new-room-form">
+              <h3>Create a new Room</h3>
               <input
                 type="text"
-                placeholder="Write a post..."
+                placeholder="Room Name"
+                value={newRoomName}
+                onChange={(e) => setNewRoomName(e.target.value)}
+                required
+              />
+              <div className="protect-checkbox">
+                <input
+                  type="checkbox"
+                  checked={isPasswordProtected}
+                  onChange={(e) => setIsPasswordProtected(e.target.checked)}
+                />
+                <label>Password Protected</label>
+              </div>
+              {isPasswordProtected && (
+                <input
+                  type="password"
+                  placeholder="Enter Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              )}
+              <button type="submit">Create Room</button>
+            </form>
+          </div>
+
+          {/* Posts Section */}
+          {/* <div className="post-container">
+            <h1>Bulletin</h1>
+            <form onSubmit={handleCreatePost} className="new-post-form">
+              <input
+                type="text"
+                placeholder="Write a new post"
                 value={newPost}
                 onChange={(e) => setNewPost(e.target.value)}
                 required
@@ -241,15 +221,10 @@ const ChatMenuPage = ({ setRoom }) => {
                         onChange={(e) => setEditedContent(e.target.value)}
                       />
                       <div className="post-actions">
-                        <button
-                          onClick={() => handleEditPost(post.id)}
-                          disabled={loading}
-                        >
+                        <button onClick={() => handleEditPost(post.id)} disabled={loading}>
                           {loading ? "Saving..." : "Save"}
                         </button>
-                        <button onClick={() => setEditingPostId(null)}>
-                          Cancel
-                        </button>
+                        <button onClick={() => setEditingPostId(null)}>Cancel</button>
                       </div>
                     </>
                   ) : (
@@ -259,7 +234,7 @@ const ChatMenuPage = ({ setRoom }) => {
                       </small>
                       <p>
                         Posted by {post.createdBy} on{" "}
-                        {new Date(post.createdAt).toLocaleString()}
+                        {new Date(post.createdAt?.toDate()).toLocaleString()}
                       </p>
                       {post.createdById === currentUser.uid && (
                         <div className="post-actions">
@@ -275,13 +250,7 @@ const ChatMenuPage = ({ setRoom }) => {
                             onClick={() => handleDeletePost(post.id)}
                             disabled={loading}
                           >
-                            {loading ? (
-                              "Deleting..."
-                            ) : (
-                              <>
-                                <FontAwesomeIcon icon={faTrash} />
-                              </>
-                            )}
+                            {loading ? "Deleting..." : <FontAwesomeIcon icon={faTrash} />}
                           </button>
                         </div>
                       )}
@@ -290,7 +259,7 @@ const ChatMenuPage = ({ setRoom }) => {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

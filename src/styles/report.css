@@ -1,0 +1,80 @@
+/* Report Modal */
+.report-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Overlay background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; /* Ensures modal is on top */
+  }
+  
+  .report-modal-dialog {
+    padding: 20px;
+    width: 30%;
+    margin: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    color: var(--text);
+    background-color: var(--accent);
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Header */
+  .report-modal-header {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .report-modal-header h2 {
+    margin-bottom: 15px;
+  }
+  
+  .closebtn {
+    background-color: transparent;
+    color: var(--text);
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  /* Text Area */
+  .report-modal-content textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    resize: none;
+    min-height: 80px;
+    font-size: 1rem;
+  }
+  
+  /* Submit Button */
+  .report-modal-content button[type="submit"] {
+    padding: 10px 15px;
+    border: 1px solid var(--primary);
+    background-color: var(--secondary);
+    border-radius: 20px;
+    color: var(--text);
+    cursor: pointer;
+  }
+  
+  /* Responsive Adjustments */
+  @media only screen and (max-width: 700px) {
+    .report-modal-dialog {
+      width: 80%;
+    }
+  }
+  
+  @media only screen and (min-width: 701px) and (max-width: 800px) {
+    .report-modal-dialog {
+      width: 60%;
+    }
+  }
+  
