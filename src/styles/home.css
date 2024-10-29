@@ -9,6 +9,63 @@
   display: flex;
 }
 
+/* recommendations section */
+
+.recommendations {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  justify-content: space-around;
+  flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+}
+
+/* Individual recommendation card styling */
+.recommendation-card {
+  background-color: #A6CAE2; /* Light blue background */
+  border-radius: 15px;
+  width: 320px;
+  height: auto;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: #fff; /* White text */
+  transition: transform 0.3s ease;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-5px); /* Slight lift on hover for interactivity */
+}
+
+.recommendation-card h4 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  color: #4B768A; /* Darker blue for the title */
+}
+
+.recommendation-card p {
+  font-size: 0.9em;
+  color: #F2F7FA; /* Soft white for text */
+  margin: 5px 0;
+}
+
+/* Button styling */
+.recommendation-card button {
+  background-color: #F4C6A5; /* Light salmon button */
+  color: #4B768A; /* Matching button text color */
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.recommendation-card button:hover {
+  background-color: #FFD9B3; /* Slightly lighter on hover */
+}
+
+
 .posts-section {
   flex: 1;
   padding: 20px;

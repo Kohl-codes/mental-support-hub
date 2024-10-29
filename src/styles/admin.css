@@ -85,7 +85,7 @@ h2 {
 .user-actions,
 .report-actions {
   display: flex;
-  gap: 10px;
+  gap: 20px;
 }
 
 .report-actions { /* Specific styles for report actions */

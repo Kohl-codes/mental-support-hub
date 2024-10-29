@@ -2,16 +2,21 @@ import React, { useState, useEffect } from "react";
 import {
   collection,
   getDocs,
+  getDoc,
   deleteDoc,
   doc,
+  addDoc,
   updateDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../configs/firebaseConfig";
 import "../styles/admin.css";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import ReportModal from "../components/ReportModal"; // Import the ReportModal component
+import { faTrash, faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import ReportModal from "../components/ReportModal"; 
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AdminPage = () => {
   const [users, setUsers] = useState([]);
@@ -89,17 +94,6 @@ const AdminPage = () => {
     }
   };
 
-  // Promote user to admin
-  const handlePromoteUser = async (userId) => {
-    try {
-      const userRef = doc(db, "users", userId);
-      await updateDoc(userRef, { role: "admin" });
-      setUsers(users.map((user) => (user.id === userId ? { ...user, role: "admin" } : user)));
-    } catch (error) {
-      console.error("Error promoting user:", error);
-    }
-  };
-
   // Delete a forum post
   const handleDeleteForum = async (forumId) => {
     try {
@@ -111,15 +105,67 @@ const AdminPage = () => {
     }
   };
 
-  // Delete a reported post
-  const handleDeleteReport = async (reportId) => {
+  // Delete a reported post and the corresponding forum post
+  const handleDeleteReport = async (reportId, postId) => {
     try {
+      // Delete the report from the "reports" collection
       await deleteDoc(doc(db, "reports", reportId));
       setReports(reports.filter((report) => report.id !== reportId));
+
+      // Delete the associated forum post from the "forums" collection
+      await deleteDoc(doc(db, "forums", postId));
+      setForums(forums.filter((forum) => forum.id !== postId));
+      setTotalForums(totalForums - 1); // Update total forums count
     } catch (error) {
-      console.error("Error deleting report:", error);
+      console.error("Error deleting report or forum post:", error);
     }
   };
+
+  // Give warning to user
+  const handleGiveWarning = async (report) => {
+    if (!report.postId || !report.reason) {
+      console.error("Error: Incomplete report data:", report);
+      return;
+    }
+  
+    try {
+      // Fetch post to get userId
+      const postRef = doc(db, "forums", report.postId);
+      const postSnap = await getDoc(postRef); // Use getDoc for a single document
+  
+      if (postSnap.exists()) {
+        const postData = postSnap.data();
+        const userId = postData.userId; // Assuming the post has a 'userId' field
+  
+        if (!userId) {
+          console.error("Error: userId not found in post data:", postData);
+          return;
+        }
+  
+        // Add warning notification to the user
+        await addDoc(collection(db, "notifications"), {
+          userId,
+          message: `Your post has been reported for "${report.reason}". Please address it within the next hour to avoid automatic deletion.`,
+          timestamp: serverTimestamp(),
+        });
+  
+        setTimeout(async () => {
+          await deleteDoc(postRef);
+          setReports((prevReports) => prevReports.filter((rep) => rep.postId !== report.postId));
+        }, 3600000); // 1 hour
+  
+        // Show toast notification on successful warning send
+        toast.success("Successfully sent warning to the original poster.");
+      } else {
+        console.error("Error: Post not found:", report.postId);
+      }
+    } catch (error) {
+      console.error("Error giving warning:", error);
+    }
+  };
+
+  
+  
 
   return (
     <div>
@@ -142,25 +188,21 @@ const AdminPage = () => {
         {/* User Management */}
         <div className="user-management">
           <h2>Manage Users</h2>
-          {users.length > 0 ? (
-            users.map((user) => (
-              <div key={user.id} className="user-card">
-                <p>
-                  <strong>{user.username}</strong> ({user.email}) -{" "}
-                  {user.role === "admin" ? "Admin" : "User"}
-                </p>
-                <div className="user-actions">
-                  <button onClick={() => handleDeleteUser(user.id)}>
-                    <FontAwesomeIcon icon={faTrash} className="faEllipsis" />
-                  </button>
-                  {user.role !== "admin" && (
-                    <button onClick={() => handlePromoteUser(user.id)}>
-                      Promote to Admin
+          {users.filter(user => user.role !== "admin").length > 0 ? (
+            users
+              .filter(user => user.role !== "admin") // Exclude admins
+              .map(user => (
+                <div key={user.id} className="user-card">
+                  <p>
+                    <strong>{user.username}</strong> ({user.email}) - User
+                  </p>
+                  <div className="user-actions">
+                    <button onClick={() => handleDeleteUser(user.id)}>
+                      <FontAwesomeIcon icon={faTrash} className="faEllipsis" />
                     </button>
-                  )}
+                  </div>
                 </div>
-              </div>
-            ))
+              ))
           ) : (
             <p>No users found.</p>
           )}
@@ -191,21 +233,22 @@ const AdminPage = () => {
           {reports.length > 0 ? (
             reports.map((report) => (
               <div key={report.id} className="report-card">
-                  <p>
-                    Post ID: {report.postId} - Reason: {report.reason}
-                  </p>
-                  <div className="report-actions"> {/* Added wrapper for actions */}
-                    <button onClick={() => handleDeleteReport(report.id)}>
-                      <FontAwesomeIcon icon={faTrash} className="faEllipsis" />
-                    </button>
-                  </div>
+                <p>
+                  Post ID: {report.postId} - Reason: {report.reason}
+                </p>
+                <div className="report-actions">
+                  <button onClick={() => handleGiveWarning(report)}>
+                    <FontAwesomeIcon icon={faExclamationTriangle} /> Give Warning
+                  </button>
+                  <button onClick={() => handleDeleteReport(report.id, report.postId)}>
+                    <FontAwesomeIcon icon={faTrash} className="faEllipsis" />
+                  </button>
                 </div>
-
+              </div>
             ))
           ) : (
             <p>No reports found.</p>
           )}
-
         </div>
 
         {/* Report Modal */}

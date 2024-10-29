@@ -9,6 +9,7 @@ import {
   where,
   doc,
   getDoc,
+  onSnapshot
 } from "firebase/firestore";
 import pclogo from "../assets/pclogo.png";
 import mobilelogo from "../assets/mobilelogo.png";
@@ -22,8 +23,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "../styles/navBar.css";
 
-const NavBar = ({ setSearchResults }) => {
-  const [searchQuery, setSearchQuery] = useState("");
+const NavBar = () => {
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -65,51 +65,52 @@ const NavBar = ({ setSearchResults }) => {
     return () => unsubscribe();
   }, []);
 
-  // Fetch notifications for regular users
   useEffect(() => {
-    const fetchNotifications = async () => {
+    const fetchNotifications = () => {
       const userId = auth.currentUser?.uid;
-      if (!userId || isAdmin) return;
-
-      try {
-        const notificationsRef = collection(db, "notifications");
-        const q = query(notificationsRef, where("userId", "==", userId));
-        const querySnapshot = await getDocs(q);
-
+      if (!userId) return;
+  
+      const notificationsRef = collection(db, "notifications");
+      const q = query(notificationsRef, where("userId", "==", userId));
+  
+      // Use onSnapshot for real-time updates
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const fetchedNotifications = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-
         setNotifications(fetchedNotifications);
-      } catch (error) {
-        console.error("Error fetching notifications: ", error);
-      }
+      });
+  
+      // Clean up the listener on unmount
+      return unsubscribe;
     };
-
+  
     fetchNotifications();
-  }, [isAdmin]);
+  }, []);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (searchQuery.trim() === "") return;
+  const handleReadAll = async () => {
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
 
     try {
-      const postsRef = collection(db, "forums");
-      const q = query(postsRef, where("content", ">=", searchQuery));
+      const notificationsRef = collection(db, "notifications");
+      const q = query(notificationsRef, where("userId", "==", userId), where("read", "==", false));
+
       const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((docSnap) => {
+        const docRef = doc(db, "notifications", docSnap.id);
+        updateDoc(docRef, { read: true }); // Mark notification as read
+      });
 
-      const searchResults = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setSearchResults(searchResults);
-      setSearchQuery("");
+      setNotifications([]); // Clear the displayed notifications
+      setShowNotifications(false); // Close the dropdown after marking as read
     } catch (error) {
-      console.error("Error searching posts: ", error);
+      console.error("Error marking notifications as read:", error);
     }
   };
+
+
 
   const handleLogout = async () => {
     try {
@@ -169,14 +170,16 @@ const NavBar = ({ setSearchResults }) => {
                     <span className="nav-words"> Mood Tracker</span>
                   </Link>
                   <div className="notifications">
-                    <button
-                      onClick={toggleNotifications}
-                      className="notifications-button"
-                    >
-                      <FontAwesomeIcon icon={faBell} /> ({notifications.length})
-                    </button>
+                   
+                     <button onClick={() => setShowNotifications(!showNotifications)} className = "notifications-button">
+                        <FontAwesomeIcon icon={faBell} /> ({notifications.length})
+                      </button>
+                 
                     {showNotifications && (
                       <div className="notifications-dropdown">
+                        <button onClick={handleReadAll} className="read-all-button">
+                            Read All
+                        </button>
                         {notifications.length > 0 ? (
                           notifications.map((notification) => (
                             <div

@@ -83,7 +83,7 @@ const HomePage = () => {
   const [reportPostId, setReportPostId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editingContent, setEditingContent] = useState("");
-
+  const [activitySuggestion, setActivitySuggestion] = useState("Take a deep breath and focus on your breathing.");
   const defaultProfilePic = "/path/to/default-profile-pic.png";
 
   // Fetch the logged-in user's profile from Firebase
@@ -238,6 +238,18 @@ const HomePage = () => {
     }
   };
 
+  // Fetch activity from Mindfulness API
+  const fetchActivity = async () => {
+    try {
+      const response = await fetch("http://mindfully-api.us-east-2.elasticbeanstalk.com/api/category/healing");
+      const data = await response.json();
+      setActivitySuggestion(data.activity);
+    } catch (error) {
+      console.error("Error fetching activity:", error);
+      setActivitySuggestion("Try a mindful breathing exercise.");
+    }
+  };
+
   return (
     <div className="home-page">
       <Navbar />
@@ -263,6 +275,7 @@ const HomePage = () => {
         </div>
 
         <div className="posts-section">
+
           <div className="post-creation">
             <h3>Create a New Post</h3>
             <form onSubmit={handlePostSubmit}>
@@ -273,6 +286,28 @@ const HomePage = () => {
               ></textarea>
               <button type="submit">Post</button>
             </form>
+          </div>
+
+          <div className="recommendations">
+            {/* Crisis Hotline Card */}
+            <div className="recommendation-card">
+              <h4>Crisis Hotline</h4>
+              <p>If you need immediate assistance, please call the crisis hotline or visit emergency resources.</p>
+              <p>Call: 1-800-273-8255</p>
+            </div>
+
+            {/* Activity Suggestion Card */}
+            <div className="recommendation-card">
+              <h4>Mindfulness Activity</h4>
+              <p>{activitySuggestion}</p>
+              <button onClick={fetchActivity}>Try a Different Activity</button>
+            </div>
+
+            {/* Mood Tracker Card */}
+            <div className="recommendation-card" onClick={() => window.location.href = "/mood-tracker"}>
+              <h4>Track Your Mood</h4>
+              <p>Click here to start tracking your mood daily!</p>
+            </div>
           </div>
 
           <div className="posts">

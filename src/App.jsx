@@ -17,6 +17,7 @@ import ForumPage from "./pages/ForumPage";
 import MoodTrackerPage from "./pages/MoodTrackerPage";
 import AdminPage from "./pages/AdminPage";
 import Cookies from "universal-cookie";
+import { ToastContainer } from "react-toastify";
 import "./App.css";
 
 const cookies = new Cookies();
