@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
@@ -318,7 +317,9 @@ const HomePage = () => {
                                 >
                                   Edit
                                 </button>
-                                <button onClick={() => handleDeletePost(post.id)}>
+                                <button
+                                  onClick={() => handleDeletePost(post.id)}
+                                >
                                   Delete
                                 </button>
                               </>
@@ -351,12 +352,11 @@ const HomePage = () => {
                       <p>{post.content}</p>
                     </div>
                   )}
-                  <div className="post-actions">
-                    <div className="post-stats">
-                      <span>{post.loves} 💖</span>
-                      <span>{post.comments.length} 💬</span>
-                    </div>
-
+                  <div className="post-stats">
+                    <span>{post.loves} 💖</span>
+                    <span>{post.comments.length} 💬</span>
+                  </div>
+                  <div className="post-actions-2">
                     <div className="post-buttons">
                       <button
                         onClick={() => handleLoveClick(post.id, post.loves)}
@@ -429,6 +429,5 @@ const HomePage = () => {
     </div>
   );
 };
-
 
 export default HomePage;

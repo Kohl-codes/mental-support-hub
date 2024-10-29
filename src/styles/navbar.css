@@ -140,7 +140,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: var(--h2-font);
+    font-size: var(--h3-font);
   }
 
   .navbar-logout {

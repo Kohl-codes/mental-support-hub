@@ -111,7 +111,7 @@
   word-wrap: break-word;
 }
 
-.post-actions {
+.post-actions-2 {
   display: flex;
   flex-direction: column;
 }
@@ -123,6 +123,7 @@
 }
 
 .post-buttons {
+  width: 100%;
   justify-content: space-between;
   padding: 0;
 }
