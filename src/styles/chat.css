@@ -86,7 +86,7 @@
   padding: 10px;
   overflow-y: auto;
   flex: 1;
-  max-height: 450px; /* Limit height for scrolling */
+  max-height: 100%; /* Limit height for scrolling */
   display: flex;
   flex-direction: column;
   background-color: #fff;
@@ -199,7 +199,7 @@
 @media only screen and (max-width: 700px) {
   .chat-container-1 {
     width: 100%;
-    margin-left: 1%;
+    margin-left: 0;
   }
 
   .header {
@@ -224,7 +224,7 @@
 
   .messages {
     padding: 5px;
-    max-height: 450px; /* Limit height for scrolling */
+    max-height: 100%px; /* Limit height for scrolling */
   }
 
   .new-message-form {
@@ -269,7 +269,7 @@
 
   .messages {
     padding: 5px;
-    max-height: 450px; /* Limit height for scrolling */
+    max-height: 100%; /* Limit height for scrolling */
   }
 
   .new-message-form {
@@ -314,7 +314,7 @@
 
   .messages {
     padding: 5px;
-    max-height: 450px; /* Limit height for scrolling */
+    max-height: 100%; /* Limit height for scrolling */
   }
 
   .new-message-form {

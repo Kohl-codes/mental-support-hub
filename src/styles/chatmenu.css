@@ -8,43 +8,28 @@
 }
 
 .chat-menu-container {
-  margin-left: 10%;
+  margin-left: 15%;
   display: flex;
-  justify-content: space-between;
-  max-width: 800px;
+  justify-content: center;
+  max-width: 1000px;
 }
 
-.chat-container,
-.post-container {
-  margin-right: 50px;
+.chat-container {
   padding: 20px;
   border-radius: 8px;
   color: var(--text);
-  width: 400px;
+  width: 700px;
 }
 
-.chat-container h1,
-.post-container h1 {
+.chat-container h1 {
   margin-bottom: 20px;
 }
 
-.chat-container input,
-.post-container input {
-  width: 100%;
-  padding: 7px;
-  border-radius: 10px;
-}
-
-.room-list,
-.post-list {
+.room-list {
   margin-bottom: 30px;
   overflow-y: scroll;
   max-height: 200px;
   padding-right: 5px;
-}
-
-.post-list {
-  max-height: 250px;
 }
 
 .room-item {
@@ -72,6 +57,13 @@
   padding-right: 5px;
 }
 
+.new-room-form input {
+  margin-top: 10px;
+  width: 75%;
+  padding: 10px;
+  align-self: center;
+}
+
 .new-room-form h2 {
   color: var(--text);
 }
@@ -82,22 +74,11 @@
 }
 
 .protect-checkbox input {
-  margin-right: -130px;
-  margin-left: -40%;
-}
-
-.post-item {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  padding: 10px;
-  background-color: #fff;
-  border-radius: 4px;
+  margin-right: -220px;
+  margin-left: -20%;
 }
 
 .new-room-form button,
-.post-container button,
 .room-item button {
   padding: 10px;
   background-color: var(--secondary);
@@ -108,19 +89,15 @@
   margin-top: 10px;
 }
 
-.post-container button {
-  width: 20%;
+.new-room-form button {
+  width: 25%;
+  align-self: self-end;
 }
 
 .new-room-form button:hover,
-.post-container button:hover,
 .room-item button:hover {
   background-color: var(--primary);
   color: #fff;
-}
-
-.post-container button {
-  margin-bottom: 20px;
 }
 
 .post-actions {
@@ -143,8 +120,7 @@
     width: 90%;
   }
 
-  .chat-container,
-  .post-container {
+  .chat-container {
     width: 100%;
     margin-right: 0;
     margin-bottom: 50px;
@@ -154,12 +130,24 @@
     width: 100%;
   }
 
-  .protect-checkbox input {
-    margin-right: -32vw;
+  .protect-checkbox {
+    margin-left: -25vw;
   }
 
-  .post-form input {
+  .protect-checkbox input {
+    margin-right: -45vw;
+  }
+
+  .new-room-form input {
+    margin-top: 0;
     width: 100%;
+    padding: 10px;
+    align-self: center;
+  }
+
+  .new-room-form button {
+    width: 100%;
+    align-self: none;
   }
 }
 
@@ -177,8 +165,7 @@
     width: 90%;
   }
 
-  .chat-container,
-  .post-container {
+  .chat-container {
     width: 100%;
     margin-right: 0;
     margin-bottom: 50px;
@@ -188,12 +175,12 @@
     width: 100%;
   }
 
-  .protect-checkbox input {
-    margin-right: -300px;
+  .protect-checkbox {
+    margin-left: -30vw;
   }
 
-  .post-form input {
-    width: 100%;
+  .protect-checkbox input {
+    margin-right: -55vw;
   }
 }
 
@@ -202,7 +189,7 @@
     height: 100vh;
   }
   .chat-menu-container {
-    margin-left: 5%;
+    margin-left: 10%;
     display: flex;
     justify-content: space-between;
     max-width: 700px;
@@ -212,21 +199,23 @@
     width: 80%;
   }
 
-  .chat-container,
-  .post-container {
+  .chat-container {
     margin-right: 30px;
     padding: 20px;
     border-radius: 8px;
     color: var(--text);
-    width: 300px;
+    width: 600px;
   }
 
-  .chat-container h1,
-  .post-container h1 {
+  .chat-container h1 {
     margin-bottom: 20px;
   }
 
+  .protect-checkbox {
+    margin-left: 0;
+  }
+
   .protect-checkbox input {
-    margin-right: -100px;
+    margin-right: -18vw;
   }
 }

@@ -135,14 +135,18 @@ const ChatMenuPage = ({ setRoom }) => {
     <div>
       <Navbar />
       <div className="bg-chat">
-        <a href="#id01" className="profile-btn">Profile</a>
+        <a href="#id01" className="profile-btn">
+          Profile
+        </a>
 
         {/* Modal for Profile */}
         <div id="id01" className="modal">
           <div className="modal-dialog">
             <div className="modal-content">
               <header className="container">
-                <a href="#" className="closebtn">×</a>
+                <a href="#" className="closebtn">
+                  ×
+                </a>
                 <h2>Profile</h2>
               </header>
               <div className="container">
@@ -161,7 +165,9 @@ const ChatMenuPage = ({ setRoom }) => {
                 <div key={room.id} className="room-item">
                   <h3>{room.name}</h3>
                   {room.password && <FontAwesomeIcon icon={faLock} />}
-                  <button onClick={() => handleJoinRoom(room.name)}>Join</button>
+                  <button onClick={() => handleJoinRoom(room.name)}>
+                    Join
+                  </button>
                 </div>
               ))}
             </div>
